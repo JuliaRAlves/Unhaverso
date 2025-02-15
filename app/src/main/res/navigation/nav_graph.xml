@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/inspirationFragment"
-        android:name="com.juliaralves.unhaverso.inspiration.presentation.InspirationFragment"
+        android:name="com.juliaralves.unhaverso.presentation.inspiration.InspirationFragment"
         android:label="@string/menu_inspiration_title"
         tools:layout="@layout/fragment_inspiration" />
 
     <fragment
         android:id="@+id/nailPolishBoxFragment"
-        android:name="com.juliaralves.unhaverso.nailpolishbox.presentation.NailPolishBoxFragment"
+        android:name="com.juliaralves.unhaverso.presentation.nailpolishbox.NailPolishBoxFragment"
         android:label="@string/menu_nail_polish_box_title"
         tools:layout="@layout/fragment_nail_polish_box" />
 
