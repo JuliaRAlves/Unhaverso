@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/inspirationFragment"
+    android:id="@+id/nav_graph">
+
+    <fragment
+        android:id="@+id/inspirationFragment"
+        android:name="com.juliaralves.unhaverso.inspiration.presentation.InspirationFragment"
+        android:label="@string/menu_inspiration_title"
+        tools:layout="@layout/fragment_inspiration" />
+
+    <fragment
+        android:id="@+id/nailPolishBoxFragment"
+        android:name="com.juliaralves.unhaverso.nailpolishbox.presentation.NailPolishBoxFragment"
+        android:label="@string/menu_nail_polish_box_title"
+        tools:layout="@layout/fragment_nail_polish_box" />
+
+</navigation>

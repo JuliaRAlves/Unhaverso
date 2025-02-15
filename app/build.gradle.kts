@@ -7,6 +7,10 @@ android {
     namespace = "com.juliaralves.unhaverso"
     compileSdk = 34
 
+    viewBinding {
+        enable = true
+    }
+
     defaultConfig {
         applicationId = "com.juliaralves.unhaverso"
         minSdk = 24
@@ -40,6 +44,8 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

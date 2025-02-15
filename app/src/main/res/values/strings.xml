@@ -1,3 +1,10 @@
 <resources>
+    <!-- region Core -->
     <string name="app_name">Unhaverso</string>
+    <!-- endregion -->
+
+    <!-- region Menu -->
+    <string name="menu_nail_polish_box_title">Caixa de esmaltes</string>
+    <string name="menu_inspiration_title">Inspiração</string>
+    <!-- endregion -->
 </resources>
