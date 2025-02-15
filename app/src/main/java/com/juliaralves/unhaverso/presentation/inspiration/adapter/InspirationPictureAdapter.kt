@@ -2,6 +2,7 @@ package com.juliaralves.unhaverso.presentation.inspiration.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -11,7 +12,8 @@ import com.juliaralves.unhaverso.databinding.ItemInspirationPictureBinding
 import com.juliaralves.unhaverso.domain.model.InspirationPictureVO
 
 class InspirationPictureAdapter(
-    private val onPictureClicked: (InspirationPictureVO) -> Unit
+    private val onDownloadClicked: (InspirationPictureVO) -> Unit,
+    private val onShareClicked: (InspirationPictureVO) -> Unit
 ) : ListAdapter<InspirationPictureVO, InspirationPictureAdapter.InspirationPictureViewHolder>(
     InspirationPictureDiffCallback
 ) {
@@ -26,19 +28,34 @@ class InspirationPictureAdapter(
     }
 
     override fun onBindViewHolder(holder: InspirationPictureViewHolder, position: Int) {
-        holder.bind(getItem(position), onPictureClicked)
+        holder.bind(getItem(position), onDownloadClicked, onShareClicked)
     }
 
     class InspirationPictureViewHolder(
         private val binding: ItemInspirationPictureBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(picture: InspirationPictureVO, onPictureClicked: (InspirationPictureVO) -> Unit) {
-            Glide.with(binding.root.context)
-                .load(picture.imageUrl)
-                .placeholder(R.drawable.bg_broken)
-                .into(binding.imgPicture)
-            binding.imgPicture.setOnClickListener { onPictureClicked.invoke(picture) }
+        fun bind(
+            picture: InspirationPictureVO,
+            onDownloadClicked: (InspirationPictureVO) -> Unit,
+            onShareClicked: (InspirationPictureVO) -> Unit
+        ) {
+            with(binding) {
+                Glide.with(root.context)
+                    .load(picture.imageUrl)
+                    .placeholder(R.drawable.bg_broken)
+                    .into(imgPicture)
+                imgPicture.setOnClickListener { ctnOptions.isVisible = true }
+                icDownload.setOnClickListener {
+                    onDownloadClicked.invoke(picture)
+                    ctnOptions.isVisible = false
+                }
+                icShare.setOnClickListener {
+                    onShareClicked.invoke(picture)
+                    ctnOptions.isVisible = false
+                }
+                ctnOptions.setOnClickListener { ctnOptions.isVisible = false }
+            }
         }
 
     }

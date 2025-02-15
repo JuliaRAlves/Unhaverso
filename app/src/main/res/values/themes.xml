@@ -27,6 +27,7 @@
     <style name="Toolbar" parent="Widget.Material3.Toolbar">
         <item name="titleTextColor">?attr/colorPrimary</item>
         <item name="titleTextAppearance">@style/DisplayTextAppearance</item>
+        <item name="android:paddingTop">32dp</item>
         <item name="android:background">?attr/colorSurface</item>
     </style>
 

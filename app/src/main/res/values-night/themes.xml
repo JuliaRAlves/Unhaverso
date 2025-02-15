@@ -23,6 +23,7 @@
         <item name="titleTextColor">?attr/colorOnPrimary</item>
         <item name="titleTextAppearance">@style/DisplayTextAppearance</item>
         <item name="android:background">?attr/colorSurface</item>
+        <item name="android:paddingTop">32dp</item>
         <item name="android:textColorPrimary">?attr/colorOnSurfaceVariant</item>
     </style>
 </resources>

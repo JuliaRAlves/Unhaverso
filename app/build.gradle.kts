@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.juliaralves.unhaverso"
-    compileSdk = 34
+    compileSdk = 35
 
     viewBinding {
         enable = true
@@ -14,7 +14,7 @@ android {
     defaultConfig {
         applicationId = "com.juliaralves.unhaverso"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
