@@ -7,6 +7,14 @@
     <string name="menu_nail_polish_box_title">Caixa de esmaltes</string>
     <string name="menu_inspiration_title">Inspiração</string>
     <string name="menu_settings_title">Configurações</string>
-    <string name="title_activity_inspiration">InspirationActivity</string>
+    <!-- endregion -->
+
+    <!-- region Inspiração -->
+    <string name="inspiration_empty_text">Adicione seus esmaltes\npara receber inspiração</string>
+    <string name="inspiration_empty_button">Adicionar esmalte</string>
+
+    <string name="inspiration_error_text">Não conseguimos\ncarregar suas inspirações.\n\nPor favor, tente novamente.</string>
+    <string name="inspiration_error_button">Recarregar</string>
+
     <!-- endregion -->
 </resources>

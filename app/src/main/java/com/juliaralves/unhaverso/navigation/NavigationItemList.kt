@@ -13,5 +13,10 @@ val navigationItemList = objectListOf(
         titleRes = R.string.menu_inspiration_title,
         iconRes = R.drawable.ic_inspiration,
         route = Screen.Inspiration.route
+    ),
+    BottomNavigationItem(
+        titleRes = R.string.menu_settings_title,
+        iconRes = R.drawable.ic_menu,
+        route = Screen.Settings.route
     )
 )

@@ -1,5 +1,8 @@
 package com.juliaralves.unhaverso.presentation.inspiration
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,6 +19,9 @@ class InspirationViewModel : ViewModel() {
     private val _shareLiveData = MutableLiveData<String>()
     val shareLiveData: LiveData<String> = _shareLiveData
 
+    var screenState: InspirationScreenState by mutableStateOf(InspirationScreenState.Loading)
+        private set
+
     // temp
     private val pictureList = listOf(
         "https://m.media-amazon.com/images/I/81hwPfRNT7L._SL1500_.jpg",
@@ -30,6 +36,10 @@ class InspirationViewModel : ViewModel() {
         "https://harpersbazaar.uol.com.br/wp-content/uploads/2023/05/nail-art-cromada-@carolina-683x1024.jpg"
     ).mapIndexed { index, item -> InspirationPictureVO(index, item) }
 
+    init {
+        screenState = InspirationScreenState.Loaded(pictureList)
+    }
+
     fun onViewCreated() {
         _pictureListLiveData.postValue(pictureList)
     }
@@ -42,4 +52,11 @@ class InspirationViewModel : ViewModel() {
         _shareLiveData.postValue(picture.imageUrl)
     }
 
+}
+
+sealed interface InspirationScreenState {
+    data object Loading : InspirationScreenState
+    data object Error : InspirationScreenState
+    data object Empty : InspirationScreenState
+    data class Loaded(val inspirationList: List<InspirationPictureVO>) : InspirationScreenState
 }

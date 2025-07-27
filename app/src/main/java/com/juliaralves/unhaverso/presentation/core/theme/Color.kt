@@ -1,4 +1,4 @@
-package com.juliaralves.unhaverso.presentation.inspiration.ui.theme
+package com.juliaralves.unhaverso.presentation.core.theme
 
 import androidx.compose.ui.graphics.Color
 
