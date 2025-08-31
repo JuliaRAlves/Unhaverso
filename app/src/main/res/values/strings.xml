@@ -1,6 +1,7 @@
 <resources>
     <!-- region Core -->
     <string name="app_name">Unhaverso</string>
+    <string name="building">Em construção</string>
     <!-- endregion -->
 
     <!-- region Menu -->
