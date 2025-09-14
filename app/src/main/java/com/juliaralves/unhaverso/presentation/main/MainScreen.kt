@@ -32,17 +32,23 @@ fun MainScreen() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Inspiration.route,
+            startDestination = Screen.NailPolishBox.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(route = Screen.Inspiration.route) {
-                InspirationScreen()
+            if (Screen.Inspiration.isEnabled) {
+                composable(route = Screen.Inspiration.route) {
+                    InspirationScreen()
+                }
             }
-            composable(route = Screen.NailPolishBox.route) {
-                NailPolishBoxScreen()
+            if (Screen.NailPolishBox.isEnabled) {
+                composable(route = Screen.NailPolishBox.route) {
+                    NailPolishBoxScreen()
+                }
             }
-            composable(route = Screen.Settings.route) {
-                SettingsScreen()
+            if (Screen.Settings.isEnabled) {
+                composable(route = Screen.Settings.route) {
+                    SettingsScreen()
+                }
             }
         }
     }

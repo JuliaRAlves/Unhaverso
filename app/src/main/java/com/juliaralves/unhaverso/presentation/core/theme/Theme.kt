@@ -19,7 +19,8 @@ private val DarkColorScheme = darkColorScheme(
     onSurfaceVariant = White2,
     onSecondaryContainer = White2,
     outline = White3,
-    outlineVariant = White3
+    outlineVariant = White3,
+    background = Purple1
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -35,7 +36,8 @@ private val LightColorScheme = lightColorScheme(
     onSurfaceVariant = Pink1,
     onSecondaryContainer = White2,
     outline = White3,
-    outlineVariant = White3
+    outlineVariant = White3,
+    background = Pink2
 )
 
 @Composable

@@ -27,20 +27,21 @@ fun BaseNavigationBar(
         containerColor = MaterialTheme.colorScheme.surface
     ) {
         navigationItemList.forEachIndexed { index, item ->
-            NavigationBarItem(
-                selected = selectedNavigationIndex.intValue == index,
-                onClick = {
-                    selectedNavigationIndex.intValue = index
-                    navController.navigate(item.route)
-                },
-                icon = {
-                    Icon(
-                        painter = painterResource(id = item.iconRes),
-                        contentDescription = stringResource(item.titleRes)
-                    )
-                }
-
-            )
+            if (item.isEnabled) {
+                NavigationBarItem(
+                    selected = selectedNavigationIndex.intValue == index,
+                    onClick = {
+                        selectedNavigationIndex.intValue = index
+                        navController.navigate(item.route)
+                    },
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = item.iconRes),
+                            contentDescription = stringResource(item.titleRes)
+                        )
+                    }
+                )
+            }
         }
     }
 }
