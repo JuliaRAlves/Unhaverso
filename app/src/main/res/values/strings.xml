@@ -18,4 +18,22 @@
     <string name="inspiration_error_button">Recarregar</string>
 
     <!-- endregion -->
+
+    <!-- region Caixa de Esmaltes -->
+
+    <string name="nail_polish_box_empty_text">Sua caixa de esmaltes está vazia.\n\nAdicione seus esmaltes aqui\npara receber inspiração!</string>
+    <string name="nail_polish_box_tag_hypoallergenic">Hipoalergênico</string>
+    <string name="nail_polish_box_tag_creamy">Cremoso</string>
+    <string name="nail_polish_box_tag_sparkling">Cintilante</string>
+    <string name="nail_polish_box_tag_metallic">Metalizado</string>
+    <string name="nail_polish_box_tag_matte">Fosco/Mate</string>
+    <string name="nail_polish_box_tag_glitter">Glitter</string>
+    <string name="nail_polish_box_tag_holographic">Holográfico</string>
+    <string name="nail_polish_box_tag_pearly">Perolado</string>
+    <string name="nail_polish_box_tag_neon">Neon</string>
+    <string name="nail_polish_box_tag_gel">Gel</string>
+    <string name="nail_polish_box_tag_acrylic">Acrílico</string>
+    <string name="nail_polish_box_tag_thermal">Térmico</string>
+
+    <!-- endregion -->
 </resources>
