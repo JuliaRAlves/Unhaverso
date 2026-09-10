@@ -33,5 +33,4 @@ class NailPolishRepositoryImpl(
     override suspend fun clearData() {
         localDataSource.removeAllNailPolish()
     }
-
 }
