@@ -1,6 +1,8 @@
-package com.juliaralves.unhaverso.domain.model
+package com.juliaralves.unhaverso.data.model
 
-data class NailPolishVO(
+import com.juliaralves.unhaverso.domain.model.NailPolishTagEnum
+
+data class NailPolishDto(
     val hexColor: String,
     val name: String,
     val brand: String,

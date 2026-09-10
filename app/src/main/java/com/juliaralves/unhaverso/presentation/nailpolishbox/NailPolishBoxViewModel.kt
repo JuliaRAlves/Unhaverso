@@ -4,10 +4,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.juliaralves.unhaverso.domain.model.NailPolishTagEnum
 import com.juliaralves.unhaverso.domain.model.NailPolishVO
+import com.juliaralves.unhaverso.domain.usecase.AddNailPolishUseCase
+import com.juliaralves.unhaverso.domain.usecase.GetNailPolishUseCase
+import kotlinx.coroutines.launch
 
-class NailPolishBoxViewModel: ViewModel() {
+class NailPolishBoxViewModel(
+    private val addNailPolishUseCase: AddNailPolishUseCase,
+    private val getNailPolishUseCase: GetNailPolishUseCase
+) : ViewModel() {
 
     var screenState: NailPolishBoxScreenState by mutableStateOf(NailPolishBoxScreenState.Empty)
         private set
@@ -18,7 +25,10 @@ class NailPolishBoxViewModel: ViewModel() {
     private var tagList: MutableList<NailPolishTagEnum> = mutableListOf()
 
     init {
-        //TODO: get items from database
+        viewModelScope.launch {
+            getNailPolishUseCase.execute(GetNailPolishUseCase.Params())
+            // TODO: add logic to show list
+        }
     }
 
     fun onColorPicked(hexColor: String) {
@@ -42,13 +52,16 @@ class NailPolishBoxViewModel: ViewModel() {
     }
 
     fun addNailPolish() {
-        val nailPolish = NailPolishVO(
-            hexColor = hexColor,
-            name = name,
-            brand = brand,
-            tagList = tagList
-        )
-        // TODO: add nail polish to database
+        viewModelScope.launch {
+            addNailPolishUseCase.execute(
+                AddNailPolishUseCase.Params(
+                    hexColor = hexColor,
+                    name = name,
+                    brand = brand,
+                    tagList = tagList
+                )
+            )
+        }
     }
 
 }

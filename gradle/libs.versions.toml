@@ -15,9 +15,13 @@ navigationCompose = "2.9.2"
 coil = "3.3.0"
 graphicsShapesAndroid = "1.0.1"
 koin = "4.1.1"
+room3Runtime = "3.0.2"
+ksp-plugin = "2.3.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-room3-compiler = { module = "androidx.room3:room3-compiler", version.ref = "room3Runtime" }
+androidx-room3-runtime = { module = "androidx.room3:room3-runtime", version.ref = "room3Runtime" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -39,9 +43,11 @@ coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", versi
 androidx-graphics-shapes-android = { group = "androidx.graphics", name = "graphics-shapes-android", version.ref = "graphicsShapesAndroid" }
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-test-junit4 = { group = "io.insert-koin", name = "koin-test-junit4", version.ref = "koin" }
+koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-plugin" }

@@ -34,6 +34,12 @@
     <string name="nail_polish_box_tag_gel">Gel</string>
     <string name="nail_polish_box_tag_acrylic">Acrílico</string>
     <string name="nail_polish_box_tag_thermal">Térmico</string>
-
+    <string name="nail_polish_box_order_by_alphabetical">A-Z</string>
+    <string name="nail_polish_box_order_by_alphabetical_reverse">Z-A</string>
+    <string name="nail_polish_box_order_by_most_recent">Mais recentes</string>
+    <string name="nail_polish_box_order_by_least_recent">Mais antigos</string>
+    <string name="nail_polish_box_group_by_color">Cores</string>
+    <string name="nail_polish_box_group_by_tag">Tags</string>
+    <string name="nail_polish_box_group_by_none">Nenhum</string>
     <!-- endregion -->
 </resources>

@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -45,18 +46,20 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlin {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_1_8
+            jvmTarget = JvmTarget.JVM_11
         }
     }
 }
 
 dependencies {
+    implementation(libs.androidx.room3.runtime)
+    ksp(libs.androidx.room3.compiler)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
@@ -72,6 +75,7 @@ dependencies {
     implementation(libs.coil.network)
     implementation(libs.androidx.graphics.shapes.android)
     implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
 
     testImplementation(libs.junit)
     testImplementation(libs.koin.test.junit4)
