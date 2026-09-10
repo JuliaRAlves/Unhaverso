@@ -24,9 +24,10 @@ import com.juliaralves.unhaverso.domain.model.InspirationPictureVO
 import com.juliaralves.unhaverso.presentation.core.components.BaseButton
 import com.juliaralves.unhaverso.presentation.inspiration.components.InspirationActionButtons
 import com.juliaralves.unhaverso.presentation.inspiration.components.InspirationFeed
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun InspirationScreen(viewModel: InspirationViewModel = viewModel()) {
+fun InspirationScreen(viewModel: InspirationViewModel = koinViewModel()) {
     val state = viewModel.screenState
     when (state) {
         is InspirationScreenState.Error -> InspirationScreenError()
