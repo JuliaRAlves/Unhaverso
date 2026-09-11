@@ -41,13 +41,16 @@ fun ColumnScope.AddNailPolishBottomSheet(
     nameInputText: String,
     onNameInputTextChange: (String) -> Unit,
     onClearNameInput: () -> Unit,
+    showNameInputError: Boolean,
     brandInputText: String,
     onBrandInputTextChange: (String) -> Unit,
+    showBrandInputError: Boolean,
     onClearBrandInput: () -> Unit,
     tagMap: Map<NailPolishTagEnum, Boolean>,
     onTagClick: (NailPolishTagEnum) -> Unit,
     onPrimaryButtonClick: () -> Unit,
-    onSecondaryButtonClick: () -> Unit
+    onSecondaryButtonClick: () -> Unit,
+    isButtonEnabled: Boolean
 ) {
     Text(
         text = stringResource(id = R.string.add_nail_polish_title),
@@ -91,6 +94,7 @@ fun ColumnScope.AddNailPolishBottomSheet(
             BaseTextField(
                 title = stringResource(R.string.add_nail_polish_text_field_name_title),
                 onClearText = onClearNameInput,
+                showError = showNameInputError,
                 errorText = stringResource(R.string.add_nail_polish_text_field_name_empty),
                 value = nameInputText,
                 onValueChange = onNameInputTextChange
@@ -100,6 +104,7 @@ fun ColumnScope.AddNailPolishBottomSheet(
                 modifier = Modifier.padding(top = 8.dp),
                 title = stringResource(R.string.add_nail_polish_text_field_brand_title),
                 onClearText = onClearBrandInput,
+                showError = showBrandInputError,
                 errorText = stringResource(R.string.add_nail_polish_text_field_brand_empty),
                 value = brandInputText,
                 onValueChange = onBrandInputTextChange
@@ -133,7 +138,8 @@ fun ColumnScope.AddNailPolishBottomSheet(
             .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
             .fillMaxWidth(),
         text = stringResource(R.string.add_nail_polish_confirm_button),
-        onClick = onPrimaryButtonClick
+        onClick = onPrimaryButtonClick,
+        isEnabled = isButtonEnabled
     )
 }
 
@@ -154,7 +160,10 @@ fun AddNailPolishBottomSheetPreview() {
                 onClearNameInput = {},
                 brandInputText = "Teste",
                 onBrandInputTextChange = {},
-                onClearBrandInput = {}
+                onClearBrandInput = {},
+                showNameInputError = false,
+                showBrandInputError = false,
+                isButtonEnabled = true
             )
         }
     }

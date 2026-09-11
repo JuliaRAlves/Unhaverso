@@ -53,6 +53,8 @@
     <string name="add_nail_polish_text_field_brand_empty">A marca não pode estar vazia!</string>
     <string name="add_nail_polish_cancel_button">Cancelar</string>
     <string name="add_nail_polish_confirm_button">Confirmar</string>
+    <string name="add_nail_polish_color_picker_text">Escolha a cor do seu esmalte</string>
+    <string name="add_nail_polish_color_picker_confirm_button">Confirmar</string>
 
     <!-- endregion -->
 </resources>

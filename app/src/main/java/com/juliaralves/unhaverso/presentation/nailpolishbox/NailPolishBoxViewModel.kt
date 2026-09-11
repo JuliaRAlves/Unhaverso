@@ -1,6 +1,7 @@
 package com.juliaralves.unhaverso.presentation.nailpolishbox
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.juliaralves.unhaverso.domain.model.NailPolishTagEnum
@@ -8,7 +9,9 @@ import com.juliaralves.unhaverso.domain.model.NailPolishVO
 import com.juliaralves.unhaverso.domain.usecase.AddNailPolishUseCase
 import com.juliaralves.unhaverso.domain.usecase.GetNailPolishUseCase
 import com.juliaralves.unhaverso.presentation.nailpolishbox.NailPolishBoxScreenEffect.HideAddNailPolishBottomSheet
+import com.juliaralves.unhaverso.presentation.nailpolishbox.NailPolishBoxScreenEffect.HideColorPicker
 import com.juliaralves.unhaverso.presentation.nailpolishbox.NailPolishBoxScreenEffect.ShowAddNailPolishBottomSheet
+import com.juliaralves.unhaverso.presentation.nailpolishbox.NailPolishBoxScreenEffect.ShowColorPicker
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,10 +30,13 @@ class NailPolishBoxViewModel(
 
     private var bottomSheetState = MutableStateFlow(
         AddNailPolishBottomSheetState(
-            selectedColor = Color(0xFF9CCC65),
+            selectedColor = Color.White,
             nameInput = "",
             brandInput = "",
-            tagMap = NailPolishTagEnum.entries.associateWith { false }.toMutableMap()
+            tagMap = NailPolishTagEnum.entries.associateWith { false }.toMutableMap(),
+            showBrandInputError = false,
+            showNameInputError = false,
+            isButtonEnabled = false
         )
     )
 
@@ -75,21 +81,43 @@ class NailPolishBoxViewModel(
         }
     }
 
-    fun onColorPicked(hexColor: Long) {
+    fun onColorPickerClicked() {
+        viewModelScope.launch {
+            _screenEffect.send(ShowColorPicker)
+        }
+    }
+
+    fun onColorPickerDismissed() {
+        viewModelScope.launch {
+            _screenEffect.send(HideColorPicker)
+        }
+    }
+
+    fun onColorPicked(color: Color) {
         bottomSheetState.update {
-            it.copy(selectedColor = Color(hexColor))
+            it.copy(selectedColor = color)
         }
     }
 
     fun onNameChanged(name: String) {
         bottomSheetState.update {
-            it.copy(nameInput = name)
+            val isButtonEnabled = name.isNotBlank() && it.brandInput.isNotBlank()
+            it.copy(
+                nameInput = name,
+                showNameInputError = name.isBlank(),
+                isButtonEnabled = isButtonEnabled
+            )
         }
     }
 
     fun onBrandChanged(brand: String) {
         bottomSheetState.update {
-            it.copy(brandInput = brand)
+            val isButtonEnabled = brand.isNotBlank() && it.nameInput.isNotBlank()
+            it.copy(
+                brandInput = brand,
+                showBrandInputError = brand.isBlank(),
+                isButtonEnabled = isButtonEnabled
+            )
         }
     }
 
@@ -105,7 +133,7 @@ class NailPolishBoxViewModel(
         viewModelScope.launch {
             addNailPolishUseCase.execute(
                 AddNailPolishUseCase.Params(
-                    hexColor = bottomSheetState.value.selectedColor.value.toLong(),
+                    colorArgb = bottomSheetState.value.selectedColor.toArgb(),
                     name = bottomSheetState.value.nameInput,
                     brand = bottomSheetState.value.brandInput,
                     tagMap = bottomSheetState.value.tagMap,
@@ -131,10 +159,15 @@ data class AddNailPolishBottomSheetState(
     val selectedColor: Color,
     val nameInput: String,
     val brandInput: String,
-    val tagMap: Map<NailPolishTagEnum, Boolean>
+    val showNameInputError: Boolean,
+    val showBrandInputError: Boolean,
+    val tagMap: Map<NailPolishTagEnum, Boolean>,
+    val isButtonEnabled: Boolean
 )
 
 sealed interface NailPolishBoxScreenEffect {
     data object ShowAddNailPolishBottomSheet : NailPolishBoxScreenEffect
     data object HideAddNailPolishBottomSheet : NailPolishBoxScreenEffect
+    data object ShowColorPicker : NailPolishBoxScreenEffect
+    data object HideColorPicker : NailPolishBoxScreenEffect
 }

@@ -8,7 +8,7 @@ import com.juliaralves.unhaverso.domain.model.NailPolishVO
 class NailPolishDataMapper {
     fun mapNailPolishDtoToEntity(dto: NailPolishDto): NailPolish {
         return NailPolish(
-            hexColor = dto.hexColor,
+            colorArgb = dto.colorArgb,
             name = dto.name,
             brand = dto.brand,
             tagList = formatTagListAsString(dto.tagList),
@@ -18,7 +18,7 @@ class NailPolishDataMapper {
 
     fun mapNailPolishDtoToVo(dto: NailPolishDto): NailPolishVO {
         return NailPolishVO(
-            hexColor = dto.hexColor,
+            colorArgb = dto.colorArgb,
             name = dto.name,
             brand = dto.brand,
             tagList = dto.tagList,
@@ -28,7 +28,7 @@ class NailPolishDataMapper {
 
     fun mapNailPolishVOToDto(vo: NailPolishVO): NailPolishDto {
         return NailPolishDto(
-            hexColor = vo.hexColor,
+            colorArgb = vo.colorArgb,
             name = vo.name,
             brand = vo.brand,
             tagList = vo.tagList,
@@ -38,7 +38,7 @@ class NailPolishDataMapper {
 
     fun mapNailPolishToDto(entity: NailPolish): NailPolishDto {
         return NailPolishDto(
-            hexColor = entity.hexColor,
+            colorArgb = entity.colorArgb,
             name = entity.name,
             brand = entity.brand,
             tagList = formatStringAsTagList(entity.tagList),

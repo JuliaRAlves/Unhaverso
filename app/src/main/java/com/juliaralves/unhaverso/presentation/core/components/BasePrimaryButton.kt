@@ -23,6 +23,7 @@ import com.juliaralves.unhaverso.presentation.core.theme.UnhaversoTheme
 fun BasePrimaryButton(
     modifier: Modifier = Modifier,
     text: String,
+    isEnabled: Boolean = true,
     icon: Painter? = null,
     onClick: () -> Unit
 ) {
@@ -30,7 +31,8 @@ fun BasePrimaryButton(
         onClick,
         modifier = modifier.height(48.dp),
         shape = RoundedCornerShape(size = 16.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+        enabled = isEnabled
     ) {
         Text(
             text = text,
@@ -51,7 +53,12 @@ fun BasePrimaryButton(
 @Composable
 fun BasePrimaryButtonDarkMode() {
     UnhaversoTheme {
-        BasePrimaryButton(Modifier, "Clique aqui", painterResource(R.drawable.ic_inspiration)) {
+        BasePrimaryButton(
+            Modifier,
+            "Clique aqui",
+            true,
+            painterResource(R.drawable.ic_inspiration)
+        ) {
 
         }
     }
@@ -61,7 +68,12 @@ fun BasePrimaryButtonDarkMode() {
 @Composable
 fun BasePrimaryButtonLightMode() {
     UnhaversoTheme {
-        BasePrimaryButton(Modifier, "Clique aqui", painterResource(R.drawable.ic_inspiration)) {
+        BasePrimaryButton(
+            Modifier,
+            "Clique aqui",
+            true,
+            painterResource(R.drawable.ic_inspiration)
+        ) {
 
         }
     }

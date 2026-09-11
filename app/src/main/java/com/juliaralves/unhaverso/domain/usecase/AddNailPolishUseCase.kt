@@ -11,7 +11,7 @@ class AddNailPolishUseCase(private val repository: NailPolishRepository) {
 
     suspend fun execute(params: Params) {
         val nailPolishVO = NailPolishVO(
-            hexColor = params.hexColor,
+            colorArgb = params.colorArgb,
             name = params.name,
             brand = params.brand,
             tagList = params.tagMap.mapNotNull { if (it.value) it.key else null },
@@ -22,7 +22,7 @@ class AddNailPolishUseCase(private val repository: NailPolishRepository) {
     }
 
     data class Params(
-        val hexColor: Long,
+        val colorArgb: Int,
         val name: String,
         val brand: String,
         val tagMap: Map<NailPolishTagEnum, Boolean>
