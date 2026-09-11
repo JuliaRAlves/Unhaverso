@@ -1,4 +1,4 @@
-package com.juliaralves.unhaverso.presentation.nailpolishbox
+package com.juliaralves.unhaverso.presentation.nailpolishbox.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,6 +23,7 @@ import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.juliaralves.unhaverso.R
 import com.juliaralves.unhaverso.presentation.core.components.BasePrimaryButton
+import com.juliaralves.unhaverso.presentation.nailpolishbox.NailPolishBoxScreenState
 
 @Composable
 fun ColorPickerDialog(

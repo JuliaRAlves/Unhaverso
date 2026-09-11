@@ -36,6 +36,8 @@ import com.juliaralves.unhaverso.presentation.nailpolishbox.NailPolishBoxScreenE
 import com.juliaralves.unhaverso.presentation.nailpolishbox.NailPolishBoxScreenEffect.HideColorPicker
 import com.juliaralves.unhaverso.presentation.nailpolishbox.NailPolishBoxScreenEffect.ShowAddNailPolishBottomSheet
 import com.juliaralves.unhaverso.presentation.nailpolishbox.NailPolishBoxScreenEffect.ShowColorPicker
+import com.juliaralves.unhaverso.presentation.nailpolishbox.components.AddNailPolishBottomSheet
+import com.juliaralves.unhaverso.presentation.nailpolishbox.components.ColorPickerDialog
 import com.juliaralves.unhaverso.presentation.nailpolishbox.components.NailPolishBoxActionButton
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
