@@ -41,6 +41,8 @@
     <string name="nail_polish_box_group_by_color">Cores</string>
     <string name="nail_polish_box_group_by_tag">Tags</string>
     <string name="nail_polish_box_group_by_none">Nenhum</string>
+    <string name="nail_polish_box_dropdown_edit">Editar</string>
+    <string name="nail_polish_box_dropdown_delete">Excluir</string>
 
     <!-- endregion -->
 

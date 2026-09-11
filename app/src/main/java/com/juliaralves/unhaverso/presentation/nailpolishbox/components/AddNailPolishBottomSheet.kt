@@ -1,4 +1,4 @@
-package com.juliaralves.unhaverso.presentation.nailpolishbox
+package com.juliaralves.unhaverso.presentation.nailpolishbox.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
