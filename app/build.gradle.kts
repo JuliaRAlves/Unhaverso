@@ -10,13 +10,10 @@ plugins {
 
 android {
     namespace = "com.juliaralves.unhaverso"
-    compileSdk = 35
+    compileSdk = 36
 
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
     }
 
     viewBinding {
@@ -26,7 +23,7 @@ android {
     defaultConfig {
         applicationId = "com.juliaralves.unhaverso"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "0.1"
 
@@ -44,15 +41,22 @@ android {
                 "proguard-rules.pro"
             )
         }
+        debug {
+            isDebuggable = true
+            isMinifyEnabled = false
+            isProfileable = true
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
+        }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlin {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_11
+            jvmTarget = JvmTarget.JVM_17
         }
     }
 }
@@ -76,6 +80,7 @@ dependencies {
     implementation(libs.androidx.graphics.shapes.android)
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
+    implementation(libs.compose.colorpicker)
 
     testImplementation(libs.junit)
     testImplementation(libs.koin.test.junit4)

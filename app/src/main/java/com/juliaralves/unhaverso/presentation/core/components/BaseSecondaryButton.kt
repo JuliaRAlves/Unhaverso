@@ -1,13 +1,14 @@
 package com.juliaralves.unhaverso.presentation.core.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,10 +21,16 @@ import com.juliaralves.unhaverso.R
 import com.juliaralves.unhaverso.presentation.core.theme.UnhaversoTheme
 
 @Composable
-fun BaseButton(text: String, icon: Painter? = null, onClick: () -> Unit) {
-    Button(
+fun BaseSecondaryButton(
+    modifier: Modifier = Modifier,
+    text: String,
+    icon: Painter? = null,
+    onClick: () -> Unit
+) {
+    OutlinedButton(
         onClick,
-        modifier = Modifier.height(48.dp),
+        border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onPrimaryContainer),
+        modifier = modifier.height(48.dp),
         shape = RoundedCornerShape(size = 16.dp),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
     ) {
@@ -44,9 +51,9 @@ fun BaseButton(text: String, icon: Painter? = null, onClick: () -> Unit) {
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun BaseButtonDarkMode() {
+fun BaseSecondaryButtonDarkMode() {
     UnhaversoTheme {
-        BaseButton("Clique aqui", painterResource(R.drawable.ic_inspiration)) {
+        BaseSecondaryButton(Modifier, "Clique aqui", painterResource(R.drawable.ic_inspiration)) {
 
         }
     }
@@ -54,9 +61,9 @@ fun BaseButtonDarkMode() {
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun BaseButtonLightMode() {
+fun BaseSecondaryButtonLightMode() {
     UnhaversoTheme {
-        BaseButton("Clique aqui", painterResource(R.drawable.ic_inspiration)) {
+        BaseSecondaryButton(Modifier, "Clique aqui", painterResource(R.drawable.ic_inspiration)) {
 
         }
     }

@@ -7,7 +7,7 @@ import androidx.room3.PrimaryKey
 @Entity(tableName = "nail_polish")
 data class NailPolish(
     @PrimaryKey(autoGenerate = true) val uid: Long = 0L,
-    @ColumnInfo(name = "hexColor") val hexColor: String,
+    @ColumnInfo(name = "colorArgb") val colorArgb: Int,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "brand") val brand: String,
     @ColumnInfo(name = "tagList") val tagList: String,
