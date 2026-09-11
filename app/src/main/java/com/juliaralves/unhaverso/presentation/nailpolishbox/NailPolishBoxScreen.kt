@@ -2,17 +2,11 @@ package com.juliaralves.unhaverso.presentation.nailpolishbox
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -34,15 +28,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
-import com.github.skydoves.colorpicker.compose.AlphaSlider
-import com.github.skydoves.colorpicker.compose.HsvColorPicker
-import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.juliaralves.unhaverso.R
-import com.juliaralves.unhaverso.presentation.core.components.BasePrimaryButton
 import com.juliaralves.unhaverso.presentation.nailpolishbox.NailPolishBoxScreenEffect.HideAddNailPolishBottomSheet
 import com.juliaralves.unhaverso.presentation.nailpolishbox.NailPolishBoxScreenEffect.HideColorPicker
 import com.juliaralves.unhaverso.presentation.nailpolishbox.NailPolishBoxScreenEffect.ShowAddNailPolishBottomSheet
@@ -72,7 +61,10 @@ fun NailPolishBoxScreen(viewModel: NailPolishBoxViewModel = koinViewModel()) {
     }
 
     if (showColorPicker) {
-        ColorPicker(viewModel, state)
+        ColorPickerDialog(
+            state = state,
+            onDismissed = { viewModel.onColorPickerDismissed() },
+            onColorPicked = { viewModel.onColorPicked(it) })
     }
 
     when (state) {
@@ -82,69 +74,6 @@ fun NailPolishBoxScreen(viewModel: NailPolishBoxViewModel = koinViewModel()) {
 
         is NailPolishBoxScreenState.Filled -> {
             NailPolishBoxFilledScreen(viewModel, state, showBottomSheet)
-        }
-    }
-}
-
-@Composable
-private fun ColorPicker(viewModel: NailPolishBoxViewModel, state: NailPolishBoxScreenState) {
-    val controller = rememberColorPickerController()
-
-    Dialog(onDismissRequest = { viewModel.onColorPickerDismissed() }) {
-        Box(
-            modifier = Modifier
-                .background(
-                    color = MaterialTheme.colorScheme.background,
-                    shape = RoundedCornerShape(16.dp)
-                )
-                .padding(16.dp)
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = stringResource(R.string.add_nail_polish_color_picker_text))
-
-                HsvColorPicker(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp)
-                        .height(300.dp),
-                    controller = controller,
-                    initialColor = state.addNailPolishBottomSheetState.selectedColor
-                )
-
-                AlphaSlider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                        .height(35.dp),
-                    controller = controller,
-                    initialColor = state.addNailPolishBottomSheetState.selectedColor
-                )
-
-                Box(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .padding(8.dp)
-                        .background(
-                            color = controller.selectedColor.value,
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .border(
-                            1.dp,
-                            MaterialTheme.colorScheme.onPrimaryContainer,
-                            RoundedCornerShape(8.dp)
-                        )
-                )
-
-                BasePrimaryButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 24.dp),
-                    text = stringResource(R.string.add_nail_polish_color_picker_confirm_button)
-                ) {
-                    viewModel.onColorPicked(controller.selectedColor.value)
-                    viewModel.onColorPickerDismissed()
-                }
-            }
         }
     }
 }
