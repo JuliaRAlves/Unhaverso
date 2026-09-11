@@ -20,10 +20,15 @@ import com.juliaralves.unhaverso.R
 import com.juliaralves.unhaverso.presentation.core.theme.UnhaversoTheme
 
 @Composable
-fun BaseButton(text: String, icon: Painter? = null, onClick: () -> Unit) {
+fun BasePrimaryButton(
+    modifier: Modifier = Modifier,
+    text: String,
+    icon: Painter? = null,
+    onClick: () -> Unit
+) {
     Button(
         onClick,
-        modifier = Modifier.height(48.dp),
+        modifier = modifier.height(48.dp),
         shape = RoundedCornerShape(size = 16.dp),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
     ) {
@@ -44,9 +49,9 @@ fun BaseButton(text: String, icon: Painter? = null, onClick: () -> Unit) {
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun BaseButtonDarkMode() {
+fun BasePrimaryButtonDarkMode() {
     UnhaversoTheme {
-        BaseButton("Clique aqui", painterResource(R.drawable.ic_inspiration)) {
+        BasePrimaryButton(Modifier, "Clique aqui", painterResource(R.drawable.ic_inspiration)) {
 
         }
     }
@@ -54,9 +59,9 @@ fun BaseButtonDarkMode() {
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun BaseButtonLightMode() {
+fun BasePrimaryButtonLightMode() {
     UnhaversoTheme {
-        BaseButton("Clique aqui", painterResource(R.drawable.ic_inspiration)) {
+        BasePrimaryButton(Modifier, "Clique aqui", painterResource(R.drawable.ic_inspiration)) {
 
         }
     }

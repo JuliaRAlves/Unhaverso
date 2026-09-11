@@ -14,7 +14,7 @@ class AddNailPolishUseCase(private val repository: NailPolishRepository) {
             hexColor = params.hexColor,
             name = params.name,
             brand = params.brand,
-            tagList = params.tagList,
+            tagList = params.tagMap.mapNotNull { if (it.value) it.key else null },
             createdAt = Clock.System.now().toEpochMilliseconds()
         )
 
@@ -22,9 +22,9 @@ class AddNailPolishUseCase(private val repository: NailPolishRepository) {
     }
 
     data class Params(
-        val hexColor: String,
+        val hexColor: Long,
         val name: String,
         val brand: String,
-        val tagList: List<NailPolishTagEnum>
+        val tagMap: Map<NailPolishTagEnum, Boolean>
     )
 }

@@ -43,4 +43,16 @@
     <string name="nail_polish_box_group_by_none">Nenhum</string>
 
     <!-- endregion -->
+
+    <!-- region Adicionar esmalte -->
+
+    <string name="add_nail_polish_title">Adicionar esmalte</string>
+    <string name="add_nail_polish_text_field_name_title">Nome do esmalte</string>
+    <string name="add_nail_polish_text_field_name_empty">O nome não pode estar vazio!</string>
+    <string name="add_nail_polish_text_field_brand_title">Marca do esmalte</string>
+    <string name="add_nail_polish_text_field_brand_empty">A marca não pode estar vazia!</string>
+    <string name="add_nail_polish_cancel_button">Cancelar</string>
+    <string name="add_nail_polish_confirm_button">Confirmar</string>
+
+    <!-- endregion -->
 </resources>

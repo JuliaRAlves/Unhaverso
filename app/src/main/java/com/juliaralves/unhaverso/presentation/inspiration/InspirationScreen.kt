@@ -2,7 +2,6 @@ package com.juliaralves.unhaverso.presentation.inspiration
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,10 +17,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.juliaralves.unhaverso.R
 import com.juliaralves.unhaverso.domain.model.InspirationPictureVO
-import com.juliaralves.unhaverso.presentation.core.components.BaseButton
+import com.juliaralves.unhaverso.presentation.core.components.BasePrimaryButton
 import com.juliaralves.unhaverso.presentation.inspiration.components.InspirationActionButtons
 import com.juliaralves.unhaverso.presentation.inspiration.components.InspirationFeed
 import org.koin.androidx.compose.koinViewModel
@@ -67,7 +65,7 @@ private fun InspirationScreenError() {
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center
         )
-        BaseButton(
+        BasePrimaryButton(
             text = stringResource(id = R.string.inspiration_error_button)
         ) { }
     }
@@ -92,7 +90,7 @@ private fun InspirationScreenEmpty() {
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center
         )
-        BaseButton(
+        BasePrimaryButton(
             text = stringResource(id = R.string.inspiration_empty_button),
             icon = painterResource(id = R.drawable.ic_plus)
         ) { }
