@@ -9,6 +9,7 @@ import com.juliaralves.unhaverso.data.repository.NailPolishRepositoryImpl
 import com.juliaralves.unhaverso.domain.repository.NailPolishRepository
 import com.juliaralves.unhaverso.domain.usecase.AddNailPolishUseCase
 import com.juliaralves.unhaverso.domain.usecase.GetNailPolishUseCase
+import com.juliaralves.unhaverso.domain.usecase.RemoveNailPolishUseCase
 import com.juliaralves.unhaverso.presentation.inspiration.InspirationViewModel
 import com.juliaralves.unhaverso.presentation.nailpolishbox.NailPolishBoxViewModel
 import org.koin.core.module.dsl.factoryOf
@@ -26,6 +27,7 @@ val appModule = module {
     // Domain
     factoryOf(::GetNailPolishUseCase)
     factoryOf(::AddNailPolishUseCase)
+    factoryOf(::RemoveNailPolishUseCase)
 
     // Presentation
     viewModelOf(::InspirationViewModel)

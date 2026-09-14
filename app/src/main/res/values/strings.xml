@@ -44,6 +44,18 @@
     <string name="nail_polish_box_dropdown_edit">Editar</string>
     <string name="nail_polish_box_dropdown_delete">Excluir</string>
     <string name="nail_polish_box_options_search">Buscar esmalte</string>
+    <string name="nail_polish_box_color_family_red">Vermelho</string>
+    <string name="nail_polish_box_color_family_orange">Laranja</string>
+    <string name="nail_polish_box_color_family_yellow">Amarelo</string>
+    <string name="nail_polish_box_color_family_green">Verde</string>
+    <string name="nail_polish_box_color_family_cyan">Ciano</string>
+    <string name="nail_polish_box_color_family_blue">Azul</string>
+    <string name="nail_polish_box_color_family_purple">Roxo</string>
+    <string name="nail_polish_box_color_family_pink">Rosa</string>
+    <string name="nail_polish_box_color_family_brown">Marrom</string>
+    <string name="nail_polish_box_color_family_gray">Cinza</string>
+    <string name="nail_polish_box_color_family_black">Preto</string>
+    <string name="nail_polish_box_color_family_white">Branco</string>
 
     <!-- endregion -->
 

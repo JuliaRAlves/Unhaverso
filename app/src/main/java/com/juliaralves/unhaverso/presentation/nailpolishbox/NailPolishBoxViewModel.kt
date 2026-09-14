@@ -4,10 +4,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.juliaralves.unhaverso.domain.model.NailPolishGroupByEnum
+import com.juliaralves.unhaverso.domain.model.NailPolishSortByEnum
 import com.juliaralves.unhaverso.domain.model.NailPolishTagEnum
 import com.juliaralves.unhaverso.domain.model.NailPolishVO
 import com.juliaralves.unhaverso.domain.usecase.AddNailPolishUseCase
 import com.juliaralves.unhaverso.domain.usecase.GetNailPolishUseCase
+import com.juliaralves.unhaverso.domain.usecase.RemoveNailPolishUseCase
 import com.juliaralves.unhaverso.presentation.nailpolishbox.NailPolishBoxScreenEffect.HideAddNailPolishBottomSheet
 import com.juliaralves.unhaverso.presentation.nailpolishbox.NailPolishBoxScreenEffect.HideColorPicker
 import com.juliaralves.unhaverso.presentation.nailpolishbox.NailPolishBoxScreenEffect.ShowAddNailPolishBottomSheet
@@ -25,7 +28,8 @@ import kotlinx.coroutines.launch
 
 class NailPolishBoxViewModel(
     private val addNailPolishUseCase: AddNailPolishUseCase,
-    private val getNailPolishUseCase: GetNailPolishUseCase
+    private val getNailPolishUseCase: GetNailPolishUseCase,
+    private val removeNailPolishUseCase: RemoveNailPolishUseCase
 ) : ViewModel() {
 
     private var bottomSheetState = MutableStateFlow(
@@ -40,7 +44,7 @@ class NailPolishBoxViewModel(
         )
     )
 
-    private val nailPolishMap = MutableStateFlow<Map<String, List<NailPolishVO>>>(emptyMap())
+    private val nailPolishMap = MutableStateFlow<Map<Int, List<NailPolishVO>>>(emptyMap())
 
     val screenState: StateFlow<NailPolishBoxScreenState> = combine(
         nailPolishMap,
@@ -49,7 +53,10 @@ class NailPolishBoxViewModel(
         if (map.isEmpty()) {
             NailPolishBoxScreenState.Empty(bottomSheet)
         } else {
-            NailPolishBoxScreenState.Filled(bottomSheet, map)
+            NailPolishBoxScreenState.Filled(
+                addNailPolishBottomSheetState = bottomSheet,
+                nailPolishMap = map,
+                isGrouped = map.all { it.key != 0 })
         }
     }.stateIn(
         scope = viewModelScope,
@@ -61,11 +68,59 @@ class NailPolishBoxViewModel(
     val screenEffect: Flow<NailPolishBoxScreenEffect>
         get() = _screenEffect.receiveAsFlow()
 
+    private var sortByEnum: NailPolishSortByEnum? = null
+    private var groupByEnum: NailPolishGroupByEnum? = null
+    private var searchInput: String? = null
+
     init {
+        viewModelScope.launch { updateList() }
+    }
+
+    fun onSearchInputChanged(text: String) {
         viewModelScope.launch {
-            nailPolishMap.update {
-                getNailPolishUseCase.execute(GetNailPolishUseCase.Params())
+            searchInput = text
+            updateList()
+        }
+    }
+
+    fun onSortSelected(sortByEnum: NailPolishSortByEnum) {
+        viewModelScope.launch {
+            this@NailPolishBoxViewModel.sortByEnum = sortByEnum
+            updateList()
+        }
+    }
+
+    fun onGroupSelected(groupByEnum: NailPolishGroupByEnum) {
+        viewModelScope.launch {
+            this@NailPolishBoxViewModel.groupByEnum = groupByEnum
+            updateList()
+        }
+    }
+
+    fun onEditClicked(nailPolish: NailPolishVO) {
+        viewModelScope.launch {
+            bottomSheetState.update {
+                AddNailPolishBottomSheetState(
+                    selectedColor = Color(nailPolish.colorArgb),
+                    nameInput = nailPolish.name,
+                    brandInput = nailPolish.brand,
+                    tagMap = NailPolishTagEnum.entries.associateWith { tag ->
+                        nailPolish.tagList.contains(tag)
+                    }.toMutableMap(),
+                    showBrandInputError = false,
+                    showNameInputError = false,
+                    isButtonEnabled = false,
+                    editId = nailPolish.id
+                )
             }
+            _screenEffect.send(ShowAddNailPolishBottomSheet)
+        }
+    }
+
+    fun onDeleteClicked(nailPolish: NailPolishVO) {
+        viewModelScope.launch {
+            removeNailPolishUseCase.execute(RemoveNailPolishUseCase.Params(nailPolish.id))
+            updateList()
         }
     }
 
@@ -78,6 +133,7 @@ class NailPolishBoxViewModel(
     fun onDismissBottomSheet() {
         viewModelScope.launch {
             _screenEffect.send(HideAddNailPolishBottomSheet)
+            clearBottomSheet()
         }
     }
 
@@ -133,6 +189,7 @@ class NailPolishBoxViewModel(
         viewModelScope.launch {
             addNailPolishUseCase.execute(
                 AddNailPolishUseCase.Params(
+                    id = bottomSheetState.value.editId,
                     colorArgb = bottomSheetState.value.selectedColor.toArgb(),
                     name = bottomSheetState.value.nameInput,
                     brand = bottomSheetState.value.brandInput,
@@ -140,6 +197,34 @@ class NailPolishBoxViewModel(
                 )
             )
             _screenEffect.send(HideAddNailPolishBottomSheet)
+            clearBottomSheet()
+            updateList()
+        }
+    }
+
+    private fun clearBottomSheet() {
+        bottomSheetState.update {
+            AddNailPolishBottomSheetState(
+                selectedColor = Color.White,
+                nameInput = "",
+                brandInput = "",
+                tagMap = NailPolishTagEnum.entries.associateWith { false }.toMutableMap(),
+                showBrandInputError = false,
+                showNameInputError = false,
+                isButtonEnabled = false
+            )
+        }
+    }
+
+    private suspend fun updateList() {
+        nailPolishMap.update {
+            getNailPolishUseCase.execute(
+                GetNailPolishUseCase.Params(
+                    filterText = searchInput,
+                    sortBy = sortByEnum,
+                    groupBy = groupByEnum
+                )
+            )
         }
     }
 }
@@ -151,7 +236,8 @@ sealed class NailPolishBoxScreenState(open val addNailPolishBottomSheetState: Ad
 
     data class Filled(
         override val addNailPolishBottomSheetState: AddNailPolishBottomSheetState,
-        val nailPolishMap: Map<String, List<NailPolishVO>>
+        val nailPolishMap: Map<Int, List<NailPolishVO>>,
+        val isGrouped: Boolean
     ) : NailPolishBoxScreenState(addNailPolishBottomSheetState)
 }
 
@@ -162,7 +248,8 @@ data class AddNailPolishBottomSheetState(
     val showNameInputError: Boolean,
     val showBrandInputError: Boolean,
     val tagMap: Map<NailPolishTagEnum, Boolean>,
-    val isButtonEnabled: Boolean
+    val isButtonEnabled: Boolean,
+    val editId: Long? = null
 )
 
 sealed interface NailPolishBoxScreenEffect {

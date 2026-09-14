@@ -6,33 +6,14 @@ import com.juliaralves.unhaverso.domain.model.NailPolishTagEnum
 import com.juliaralves.unhaverso.domain.model.NailPolishVO
 
 class NailPolishDataMapper {
-    fun mapNailPolishDtoToEntity(dto: NailPolishDto): NailPolish {
-        return NailPolish(
-            colorArgb = dto.colorArgb,
-            name = dto.name,
-            brand = dto.brand,
-            tagList = formatTagListAsString(dto.tagList),
-            createdAt = dto.createdAt
-        )
-    }
-
     fun mapNailPolishDtoToVo(dto: NailPolishDto): NailPolishVO {
         return NailPolishVO(
             colorArgb = dto.colorArgb,
             name = dto.name,
             brand = dto.brand,
             tagList = dto.tagList,
-            createdAt = dto.createdAt
-        )
-    }
-
-    fun mapNailPolishVOToDto(vo: NailPolishVO): NailPolishDto {
-        return NailPolishDto(
-            colorArgb = vo.colorArgb,
-            name = vo.name,
-            brand = vo.brand,
-            tagList = vo.tagList,
-            createdAt = vo.createdAt
+            createdAt = dto.createdAt,
+            id = dto.id
         )
     }
 
@@ -42,15 +23,17 @@ class NailPolishDataMapper {
             name = entity.name,
             brand = entity.brand,
             tagList = formatStringAsTagList(entity.tagList),
-            createdAt = entity.createdAt
+            createdAt = entity.createdAt,
+            id = entity.uid
         )
     }
 
-    private fun formatTagListAsString(original: List<NailPolishTagEnum>): String {
+    fun formatTagListAsString(original: List<NailPolishTagEnum>): String {
         return original.joinToString(",")
     }
 
     private fun formatStringAsTagList(original: String): List<NailPolishTagEnum> {
+        if (original.isBlank()) return emptyList()
         val originalSplit = original.split(",")
         val tagList = originalSplit.mapNotNull { tagText ->
             NailPolishTagEnum.entries.firstOrNull { it.name == tagText }
@@ -59,7 +42,7 @@ class NailPolishDataMapper {
         return if (tagList.size == originalSplit.size) {
             tagList
         } else {
-            throw NoSuchElementException("Tag list contains invalid element.")
+            throw NoSuchElementException("Tag list contains invalid element: $tagList")
         }
     }
 }
