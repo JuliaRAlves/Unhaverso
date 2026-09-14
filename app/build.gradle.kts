@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.juliaralves.unhaverso"
-    compileSdk = 36
+    compileSdk = 37
 
     buildFeatures {
         compose = true
@@ -23,7 +23,7 @@ android {
     defaultConfig {
         applicationId = "com.juliaralves.unhaverso"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 1
         versionName = "0.1"
 
