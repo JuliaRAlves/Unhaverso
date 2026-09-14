@@ -146,6 +146,7 @@ fun NailPolishBoxCardDarkPreview() {
         NailPolishBoxCard(
             Modifier.width(200.dp),
             NailPolishVO(
+                id = 1,
                 Color.Blue.toArgb(),
                 "Azulcrination",
                 "Risqué",
@@ -166,6 +167,7 @@ fun NailPolishBoxCardLightPreview() {
         NailPolishBoxCard(
             Modifier.width(200.dp),
             NailPolishVO(
+                id = 1,
                 Color.Blue.toArgb(),
                 "Azulcrination",
                 "Risqué",
@@ -186,6 +188,7 @@ fun NailPolishBoxCardCompactDarkPreview() {
         NailPolishBoxCard(
             Modifier.width(200.dp),
             NailPolishVO(
+                id = 1,
                 Color.Blue.toArgb(),
                 "Azulcrination",
                 "Risqué",
@@ -206,6 +209,7 @@ fun NailPolishBoxCardCompactLightPreview() {
         NailPolishBoxCard(
             Modifier.width(200.dp),
             NailPolishVO(
+                id = 1,
                 Color.Blue.toArgb(),
                 "Azulcrination",
                 "Risqué",

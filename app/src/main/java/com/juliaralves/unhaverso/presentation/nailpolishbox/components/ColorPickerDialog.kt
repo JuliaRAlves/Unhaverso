@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.github.skydoves.colorpicker.compose.AlphaSlider
+import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.juliaralves.unhaverso.R
@@ -54,7 +54,7 @@ fun ColorPickerDialog(
                     initialColor = state.addNailPolishBottomSheetState.selectedColor
                 )
 
-                AlphaSlider(
+                BrightnessSlider(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
