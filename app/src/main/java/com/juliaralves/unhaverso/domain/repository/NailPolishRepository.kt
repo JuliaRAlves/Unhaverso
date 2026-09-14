@@ -2,6 +2,7 @@ package com.juliaralves.unhaverso.domain.repository
 
 import com.juliaralves.unhaverso.domain.model.NailPolishTagEnum
 import com.juliaralves.unhaverso.domain.model.NailPolishVO
+import kotlinx.coroutines.flow.Flow
 
 interface NailPolishRepository {
     suspend fun addNailPolish(
@@ -12,7 +13,7 @@ interface NailPolishRepository {
     )
 
     suspend fun deleteNailPolish(id: Long)
-    suspend fun getNailPolishFilteredBy(text: String? = null): List<NailPolishVO>
+    fun getNailPolishFilteredBy(text: String? = null): Flow<List<NailPolishVO>>
 
     suspend fun clearData()
 }

@@ -5,6 +5,7 @@ import androidx.room3.Insert
 import androidx.room3.OnConflictStrategy
 import androidx.room3.Query
 import com.juliaralves.unhaverso.data.local.room.entity.NailPolish
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NailPolishDao {
@@ -17,7 +18,7 @@ interface NailPolishDao {
                 "        OR tagList LIKE '%' || :text || '%'\n" +
                 "    )"
     )
-    suspend fun getFilteredBy(text: String? = null): List<NailPolish>
+    fun getFilteredBy(text: String? = null): Flow<List<NailPolish>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(nailPolish: NailPolish)

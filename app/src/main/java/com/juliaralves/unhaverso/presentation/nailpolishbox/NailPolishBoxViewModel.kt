@@ -15,16 +15,20 @@ import com.juliaralves.unhaverso.presentation.nailpolishbox.NailPolishBoxScreenE
 import com.juliaralves.unhaverso.presentation.nailpolishbox.NailPolishBoxScreenEffect.HideColorPicker
 import com.juliaralves.unhaverso.presentation.nailpolishbox.NailPolishBoxScreenEffect.ShowAddNailPolishBottomSheet
 import com.juliaralves.unhaverso.presentation.nailpolishbox.NailPolishBoxScreenEffect.ShowColorPicker
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
+@OptIn(ExperimentalCoroutinesApi::class)
 
 class NailPolishBoxViewModel(
     private val addNailPolishUseCase: AddNailPolishUseCase,
@@ -32,7 +36,7 @@ class NailPolishBoxViewModel(
     private val removeNailPolishUseCase: RemoveNailPolishUseCase
 ) : ViewModel() {
 
-    private var bottomSheetState = MutableStateFlow(
+    private val bottomSheetState = MutableStateFlow(
         AddNailPolishBottomSheetState(
             selectedColor = Color.White,
             nameInput = "",
@@ -43,13 +47,17 @@ class NailPolishBoxViewModel(
             isButtonEnabled = false
         )
     )
-
-    private val nailPolishMap = MutableStateFlow<Map<Int, List<NailPolishVO>>>(emptyMap())
+    private val sortByEnum = MutableStateFlow<NailPolishSortByEnum?>(null)
+    private val groupByEnum = MutableStateFlow<NailPolishGroupByEnum?>(null)
+    private val searchInput = MutableStateFlow<String?>(null)
 
     val screenState: StateFlow<NailPolishBoxScreenState> = combine(
-        nailPolishMap,
-        bottomSheetState
-    ) { map, bottomSheet ->
+        searchInput, sortByEnum, groupByEnum
+    ) { search, sort, group ->
+        GetNailPolishUseCase.Params(filterText = search, sortBy = sort, groupBy = group)
+    }.flatMapLatest { params ->
+        getNailPolishUseCase.execute(params)
+    }.combine(bottomSheetState) { map, bottomSheet ->
         if (map.isEmpty()) {
             NailPolishBoxScreenState.Empty(bottomSheet)
         } else {
@@ -68,33 +76,16 @@ class NailPolishBoxViewModel(
     val screenEffect: Flow<NailPolishBoxScreenEffect>
         get() = _screenEffect.receiveAsFlow()
 
-    private var sortByEnum: NailPolishSortByEnum? = null
-    private var groupByEnum: NailPolishGroupByEnum? = null
-    private var searchInput: String? = null
-
-    init {
-        viewModelScope.launch { updateList() }
-    }
-
     fun onSearchInputChanged(text: String) {
-        viewModelScope.launch {
-            searchInput = text
-            updateList()
-        }
+        searchInput.update { text }
     }
 
     fun onSortSelected(sortByEnum: NailPolishSortByEnum) {
-        viewModelScope.launch {
-            this@NailPolishBoxViewModel.sortByEnum = sortByEnum
-            updateList()
-        }
+        this.sortByEnum.update { sortByEnum }
     }
 
     fun onGroupSelected(groupByEnum: NailPolishGroupByEnum) {
-        viewModelScope.launch {
-            this@NailPolishBoxViewModel.groupByEnum = groupByEnum
-            updateList()
-        }
+        this.groupByEnum.update { groupByEnum }
     }
 
     fun onEditClicked(nailPolish: NailPolishVO) {
@@ -120,7 +111,6 @@ class NailPolishBoxViewModel(
     fun onDeleteClicked(nailPolish: NailPolishVO) {
         viewModelScope.launch {
             removeNailPolishUseCase.execute(RemoveNailPolishUseCase.Params(nailPolish.id))
-            updateList()
         }
     }
 
@@ -198,7 +188,6 @@ class NailPolishBoxViewModel(
             )
             _screenEffect.send(HideAddNailPolishBottomSheet)
             clearBottomSheet()
-            updateList()
         }
     }
 
@@ -212,18 +201,6 @@ class NailPolishBoxViewModel(
                 showBrandInputError = false,
                 showNameInputError = false,
                 isButtonEnabled = false
-            )
-        }
-    }
-
-    private suspend fun updateList() {
-        nailPolishMap.update {
-            getNailPolishUseCase.execute(
-                GetNailPolishUseCase.Params(
-                    filterText = searchInput,
-                    sortBy = sortByEnum,
-                    groupBy = groupByEnum
-                )
             )
         }
     }

@@ -4,14 +4,16 @@ import com.juliaralves.unhaverso.data.local.room.database.AppDatabase
 import com.juliaralves.unhaverso.data.local.room.entity.NailPolish
 import com.juliaralves.unhaverso.data.mapper.NailPolishDataMapper
 import com.juliaralves.unhaverso.data.model.NailPolishDto
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlin.time.Clock
 
 class NailPolishLocalDataSourceImpl(
     private val database: AppDatabase,
     private val mapper: NailPolishDataMapper
 ) : NailPolishLocalDataSource {
-    override suspend fun getNailPolishFilteredBy(text: String?): List<NailPolishDto> {
-        return getDao().getFilteredBy(text).map(mapper::mapNailPolishToDto)
+    override fun getNailPolishFilteredBy(text: String?): Flow<List<NailPolishDto>> {
+        return getDao().getFilteredBy(text).map { it.map(mapper::mapNailPolishToDto) }
     }
 
     override suspend fun addNailPolish(

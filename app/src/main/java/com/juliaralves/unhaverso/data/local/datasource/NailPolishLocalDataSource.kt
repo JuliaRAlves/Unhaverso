@@ -1,9 +1,10 @@
 package com.juliaralves.unhaverso.data.local.datasource
 
 import com.juliaralves.unhaverso.data.model.NailPolishDto
+import kotlinx.coroutines.flow.Flow
 
 interface NailPolishLocalDataSource {
-    suspend fun getNailPolishFilteredBy(text: String? = null): List<NailPolishDto>
+    fun getNailPolishFilteredBy(text: String? = null): Flow<List<NailPolishDto>>
 
     suspend fun addNailPolish(
         colorArgb: Int,
