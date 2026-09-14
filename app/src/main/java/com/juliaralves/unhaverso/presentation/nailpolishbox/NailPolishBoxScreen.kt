@@ -61,7 +61,7 @@ fun NailPolishBoxScreen(viewModel: NailPolishBoxViewModel = koinViewModel()) {
     var showBottomSheet by remember { mutableStateOf(false) }
     var showColorPicker by remember { mutableStateOf(false) }
 
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(viewModel.screenEffect) {
