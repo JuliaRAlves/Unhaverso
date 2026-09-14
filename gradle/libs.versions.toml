@@ -1,5 +1,6 @@
 [versions]
 agp = "8.11.1"
+datastorePreferencesCore = "1.2.1"
 kotlin = "2.3.0"
 coreKtx = "1.16.0"
 junit = "4.13.2"
@@ -21,6 +22,8 @@ colorpicker = "1.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastorePreferencesCore" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferencesCore" }
 androidx-room3-compiler = { module = "androidx.room3:room3-compiler", version.ref = "room3Runtime" }
 androidx-room3-runtime = { module = "androidx.room3:room3-runtime", version.ref = "room3Runtime" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
