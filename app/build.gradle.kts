@@ -81,6 +81,8 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
     implementation(libs.compose.colorpicker)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore)
 
     testImplementation(libs.junit)
     testImplementation(libs.koin.test.junit4)

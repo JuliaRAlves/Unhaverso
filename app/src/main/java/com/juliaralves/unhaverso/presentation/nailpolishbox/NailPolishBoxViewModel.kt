@@ -58,7 +58,7 @@ class NailPolishBoxViewModel(
     }.flatMapLatest { params ->
         getNailPolishUseCase.execute(params)
     }.combine(bottomSheetState) { map, bottomSheet ->
-        if (map.isEmpty()) {
+        if (map.isEmpty() || map.all { it.value.isEmpty() }) {
             NailPolishBoxScreenState.Empty(bottomSheet)
         } else {
             NailPolishBoxScreenState.Filled(
