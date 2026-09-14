@@ -27,6 +27,7 @@ import com.juliaralves.unhaverso.presentation.core.theme.UnhaversoTheme
 fun BaseTextField(
     modifier: Modifier = Modifier,
     title: String,
+    leadingIcon: @Composable (() -> Unit)? = null,
     showClearIcon: Boolean = false,
     onClearText: () -> Unit,
     showError: Boolean = false,
@@ -42,6 +43,7 @@ fun BaseTextField(
             text = it
             onValueChange(it)
         },
+        leadingIcon = leadingIcon,
         label = { Text(title) },
         shape = RoundedCornerShape(size = 100.dp),
         singleLine = true,
@@ -95,7 +97,7 @@ fun BaseTextField(
 @Composable
 fun BaseTextFieldDarkMode() {
     UnhaversoTheme {
-        BaseTextField(Modifier, "Nome do esmalte", true, {}, true, "erro", "texto", {})
+        BaseTextField(Modifier, "Nome do esmalte", null, true, {}, true, "erro", "texto", {})
     }
 }
 
@@ -103,6 +105,6 @@ fun BaseTextFieldDarkMode() {
 @Composable
 fun BaseTextFieldLightMode() {
     UnhaversoTheme {
-        BaseTextField(Modifier, "Nome do esmalte", true, {}, true, "erro", "texto", {})
+        BaseTextField(Modifier, "Nome do esmalte", null, true, {}, true, "erro", "texto", {})
     }
 }
