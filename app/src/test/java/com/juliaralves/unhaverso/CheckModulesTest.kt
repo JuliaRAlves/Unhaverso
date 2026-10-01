@@ -1,6 +1,6 @@
-package com.juliaralves.unhaverso
+package com.juliaralves.nailverse
 
-import com.juliaralves.unhaverso.di.appModule
+import com.juliaralves.nailverse.di.appModule
 import org.junit.Test
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.test.KoinTest

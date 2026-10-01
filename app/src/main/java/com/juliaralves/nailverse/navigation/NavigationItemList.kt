@@ -1,0 +1,23 @@
+package com.juliaralves.nailverse.navigation
+
+import androidx.collection.objectListOf
+import com.juliaralves.nailverse.R
+
+val navigationItemList = objectListOf(
+    BottomNavigationItem(
+        titleRes = R.string.menu_nail_polish_box_title,
+        iconRes = R.drawable.ic_nail_polish_box,
+        route = Screen.NailPolishBox.route
+    ),
+    BottomNavigationItem(
+        titleRes = R.string.menu_inspiration_title,
+        iconRes = R.drawable.ic_inspiration,
+        route = Screen.Inspiration.route,
+        isEnabled = false
+    ),
+    BottomNavigationItem(
+        titleRes = R.string.menu_settings_title,
+        iconRes = R.drawable.ic_menu,
+        route = Screen.Settings.route
+    )
+)
