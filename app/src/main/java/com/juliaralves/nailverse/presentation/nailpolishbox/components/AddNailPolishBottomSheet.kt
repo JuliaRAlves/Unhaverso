@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -52,77 +54,86 @@ fun ColumnScope.AddNailPolishBottomSheet(
     onSecondaryButtonClick: () -> Unit,
     isButtonEnabled: Boolean
 ) {
-    Text(
-        text = stringResource(id = R.string.add_nail_polish_title),
-        modifier = Modifier
-            .padding(vertical = 24.dp)
-            .align(Alignment.CenterHorizontally),
-        style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onSurface,
-        textAlign = TextAlign.Center
-    )
-    Row(
-        modifier = Modifier.padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+    Column(
+        Modifier
+            .weight(1f, fill = false)
+            .verticalScroll(rememberScrollState())
     ) {
-        Box(
+        Text(
+            text = stringResource(id = R.string.add_nail_polish_title),
             modifier = Modifier
-                .clip(RoundedCornerShape(size = 8.dp))
-                .clickable(enabled = true, onClick = onEditColorClick)
-                .background(color = selectedColor)
-                .size(120.dp),
-            contentAlignment = Alignment.BottomEnd
+                .padding(vertical = 24.dp)
+                .align(Alignment.CenterHorizontally),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center
+        )
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(topStart = 8.dp))
-                    .background(color = MaterialTheme.colorScheme.primaryContainer)
-                    .size(34.dp),
-                contentAlignment = Alignment.Center
+                    .clip(RoundedCornerShape(size = 8.dp))
+                    .clickable(enabled = true, onClick = onEditColorClick)
+                    .background(color = selectedColor)
+                    .size(120.dp),
+                contentAlignment = Alignment.BottomEnd
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_edit),
-                    contentDescription = null,
-                    modifier = Modifier.size(24.dp),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(topStart = 8.dp))
+                        .background(color = MaterialTheme.colorScheme.primaryContainer)
+                        .size(34.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_edit),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+            }
+
+            Column(
+                Modifier.padding(start = 16.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                BaseTextField(
+                    title = stringResource(R.string.add_nail_polish_text_field_name_title),
+                    onClearText = onClearNameInput,
+                    showError = showNameInputError,
+                    errorText = stringResource(R.string.add_nail_polish_text_field_name_empty),
+                    value = nameInputText,
+                    onValueChange = onNameInputTextChange
+                )
+
+                BaseTextField(
+                    modifier = Modifier.padding(top = 8.dp),
+                    title = stringResource(R.string.add_nail_polish_text_field_brand_title),
+                    onClearText = onClearBrandInput,
+                    showError = showBrandInputError,
+                    errorText = stringResource(R.string.add_nail_polish_text_field_brand_empty),
+                    value = brandInputText,
+                    onValueChange = onBrandInputTextChange
                 )
             }
+
+
         }
 
-        Column(Modifier.padding(start = 16.dp), verticalArrangement = Arrangement.SpaceBetween) {
-            BaseTextField(
-                title = stringResource(R.string.add_nail_polish_text_field_name_title),
-                onClearText = onClearNameInput,
-                showError = showNameInputError,
-                errorText = stringResource(R.string.add_nail_polish_text_field_name_empty),
-                value = nameInputText,
-                onValueChange = onNameInputTextChange
-            )
-
-            BaseTextField(
-                modifier = Modifier.padding(top = 8.dp),
-                title = stringResource(R.string.add_nail_polish_text_field_brand_title),
-                onClearText = onClearBrandInput,
-                showError = showBrandInputError,
-                errorText = stringResource(R.string.add_nail_polish_text_field_brand_empty),
-                value = brandInputText,
-                onValueChange = onBrandInputTextChange
-            )
-        }
-
-
-    }
-
-    FlowRow(
-        modifier = Modifier
-            .padding(vertical = 24.dp, horizontal = 16.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
-        tagMap.forEach { (tag, isSelected) ->
-            BaseFilterChip(stringResource(tag.textRes), isSelected) { onTagClick(tag) }
+        FlowRow(
+            modifier = Modifier
+                .padding(vertical = 24.dp, horizontal = 16.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            tagMap.forEach { (tag, isSelected) ->
+                BaseFilterChip(stringResource(tag.textRes), isSelected) { onTagClick(tag) }
+            }
         }
     }
 
