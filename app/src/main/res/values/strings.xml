@@ -17,6 +17,12 @@
     <string name="inspiration_error_text">Não conseguimos\ncarregar suas inspirações.\n\nPor favor, tente novamente.</string>
     <string name="inspiration_error_button">Recarregar</string>
 
+    <string name="inspiration_filter_title">Opções de filtro</string>
+    <string name="inspiration_filter_color">Cores</string>
+    <string name="inspiration_filter_tag">Tags</string>
+    <string name="inspiration_filter_confirm">Aplicar filtros</string>
+    <string name="inspiration_filter_clear">Limpar filtros</string>
+
     <!-- endregion -->
 
     <!-- region Caixa de Esmaltes -->
