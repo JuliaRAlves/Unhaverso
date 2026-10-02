@@ -16,10 +16,14 @@ import com.juliaralves.nailverse.R
 import com.juliaralves.nailverse.presentation.core.theme.NailverseTheme
 
 @Composable
-fun InspirationActionButtons(showUp: Boolean = false, isFilterSelected: Boolean = false) {
+fun InspirationActionButtons(
+    showUp: Boolean = false,
+    isFilterSelected: Boolean = false,
+    onFilterClicked: () -> Unit
+) {
     Column {
         FloatingActionButton(
-            onClick = { },
+            onClick = { onFilterClicked() },
             elevation = FloatingActionButtonDefaults.elevation(0.dp),
             containerColor = if (isFilterSelected) {
                 MaterialTheme.colorScheme.onPrimaryContainer
@@ -53,7 +57,7 @@ fun InspirationActionButtons(showUp: Boolean = false, isFilterSelected: Boolean 
 @Composable
 fun FilterNotSelectedDarkMode() {
     NailverseTheme {
-        InspirationActionButtons(showUp = true, isFilterSelected = false)
+        InspirationActionButtons(showUp = true, isFilterSelected = false) {}
     }
 }
 
@@ -61,7 +65,7 @@ fun FilterNotSelectedDarkMode() {
 @Composable
 fun FilterNotSelectedLightMode() {
     NailverseTheme {
-        InspirationActionButtons(showUp = true, isFilterSelected = false)
+        InspirationActionButtons(showUp = true, isFilterSelected = false) {}
     }
 }
 
@@ -69,7 +73,7 @@ fun FilterNotSelectedLightMode() {
 @Composable
 fun FilterSelectedDarkMode() {
     NailverseTheme {
-        InspirationActionButtons(showUp = true, isFilterSelected = true)
+        InspirationActionButtons(showUp = true, isFilterSelected = true) {}
     }
 }
 
@@ -77,6 +81,6 @@ fun FilterSelectedDarkMode() {
 @Composable
 fun FilterSelectedLightMode() {
     NailverseTheme {
-        InspirationActionButtons(showUp = true, isFilterSelected = true)
+        InspirationActionButtons(showUp = true, isFilterSelected = true) {}
     }
 }

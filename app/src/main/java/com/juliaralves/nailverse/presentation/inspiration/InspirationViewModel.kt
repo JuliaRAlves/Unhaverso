@@ -1,17 +1,36 @@
 package com.juliaralves.nailverse.presentation.inspiration
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.juliaralves.nailverse.domain.model.ColorFamilyEnum
 import com.juliaralves.nailverse.domain.model.InspirationPictureVO
+import com.juliaralves.nailverse.domain.model.NailPolishTagEnum
+import com.juliaralves.nailverse.presentation.inspiration.InspirationScreenEffect.HideFilterOptionsBottomSheet
+import com.juliaralves.nailverse.presentation.inspiration.InspirationScreenEffect.ShowFilterOptionsBottomSheet
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class InspirationViewModel : ViewModel() {
 
-    private val _pictureListLiveData = MutableLiveData<List<InspirationPictureVO>>()
-    val pictureListLiveData: LiveData<List<InspirationPictureVO>> = _pictureListLiveData
+    private val bottomSheetState = MutableStateFlow(
+        FilterOptionsBottomSheetState(
+            colorMap = ColorFamilyEnum.entries.associateWith { false }.toMutableMap(),
+            tagMap = NailPolishTagEnum.entries.filter { it.isFilterable }.associateWith { false }
+                .toMutableMap()
+        )
+    )
+
+    private val isFilterEnabled = MutableStateFlow(false)
 
     private val _downloadLiveData = MutableLiveData<String>()
     val downloadLiveData: LiveData<String> = _downloadLiveData
@@ -19,8 +38,21 @@ class InspirationViewModel : ViewModel() {
     private val _shareLiveData = MutableLiveData<String>()
     val shareLiveData: LiveData<String> = _shareLiveData
 
-    var screenState: InspirationScreenState by mutableStateOf(InspirationScreenState.Loading)
-        private set
+    val screenState: StateFlow<InspirationScreenState> =
+        combine(bottomSheetState, isFilterEnabled) { bottomSheet, isFilterEnabled ->
+            val filterList =
+                bottomSheet.colorMap.mapNotNull { if (it.value) it.key.textRes else null }
+                    .plus(bottomSheet.tagMap.mapNotNull { if (it.value) it.key.textRes else null })
+            InspirationScreenState.Loaded(pictureList, filterList, bottomSheet, isFilterEnabled)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = InspirationScreenState.Loading
+        )
+
+    private val _screenEffect = Channel<InspirationScreenEffect>(capacity = Channel.BUFFERED)
+    val screenEffect: Flow<InspirationScreenEffect>
+        get() = _screenEffect.receiveAsFlow()
 
     // temp
     private val pictureList = listOf(
@@ -36,14 +68,6 @@ class InspirationViewModel : ViewModel() {
         "https://harpersbazaar.uol.com.br/wp-content/uploads/2023/05/nail-art-cromada-@carolina-683x1024.jpg"
     ).mapIndexed { index, item -> InspirationPictureVO(index, item) }
 
-    init {
-        screenState = InspirationScreenState.Loaded(pictureList)
-    }
-
-    fun onViewCreated() {
-        _pictureListLiveData.postValue(pictureList)
-    }
-
     fun onDownloadPictureClicked(picture: InspirationPictureVO) {
         _downloadLiveData.postValue(picture.imageUrl)
     }
@@ -52,11 +76,86 @@ class InspirationViewModel : ViewModel() {
         _shareLiveData.postValue(picture.imageUrl)
     }
 
+    fun onFilterClicked() {
+        viewModelScope.launch {
+            _screenEffect.send(ShowFilterOptionsBottomSheet)
+        }
+    }
+
+    fun onDismissBottomSheet() {
+        viewModelScope.launch {
+            _screenEffect.send(HideFilterOptionsBottomSheet)
+        }
+    }
+
+    fun onTagClicked(tag: NailPolishTagEnum) {
+        bottomSheetState.update {
+            val newMap = it.tagMap.toMutableMap()
+            newMap[tag] = newMap[tag]?.not() ?: false
+            it.copy(tagMap = newMap)
+        }
+    }
+
+    fun onColorClicked(color: ColorFamilyEnum) {
+        bottomSheetState.update {
+            val newMap = it.colorMap.toMutableMap()
+            newMap[color] = newMap[color]?.not() ?: false
+            it.copy(colorMap = newMap)
+        }
+    }
+
+    fun onFilterUnselected(filterRes: Int) {
+        bottomSheetState.update {
+            val color = ColorFamilyEnum.entries.firstOrNull { it.textRes == filterRes }
+            val tag = NailPolishTagEnum.entries.firstOrNull { it.textRes == filterRes }
+
+            if (color != null) {
+                val newMap = it.colorMap.toMutableMap()
+                newMap[color] = false
+                it.copy(colorMap = newMap)
+            } else if (tag != null) {
+                val newMap = it.tagMap.toMutableMap()
+                newMap[tag] = false
+                it.copy(tagMap = newMap)
+            } else {
+                it
+            }
+        }
+    }
+
+    fun clearFilter() {
+        viewModelScope.launch {
+            _screenEffect.send(HideFilterOptionsBottomSheet)
+            isFilterEnabled.update { false }
+            bottomSheetState.update {
+                FilterOptionsBottomSheetState(
+                    colorMap = ColorFamilyEnum.entries.associateWith { false }.toMutableMap(),
+                    tagMap = NailPolishTagEnum.entries.filter { it.isFilterable }
+                        .associateWith { false }.toMutableMap()
+                )
+            }
+        }
+    }
 }
+
+data class FilterOptionsBottomSheetState(
+    val colorMap: Map<ColorFamilyEnum, Boolean>,
+    val tagMap: Map<NailPolishTagEnum, Boolean>
+)
 
 sealed interface InspirationScreenState {
     data object Loading : InspirationScreenState
     data object Error : InspirationScreenState
     data object Empty : InspirationScreenState
-    data class Loaded(val inspirationList: List<InspirationPictureVO>) : InspirationScreenState
+    data class Loaded(
+        val inspirationList: List<InspirationPictureVO>,
+        val filterList: List<Int>,
+        val filterOptionsBottomSheetState: FilterOptionsBottomSheetState,
+        val isFilterEnabled: Boolean
+    ) : InspirationScreenState
+}
+
+sealed interface InspirationScreenEffect {
+    data object ShowFilterOptionsBottomSheet : InspirationScreenEffect
+    data object HideFilterOptionsBottomSheet : InspirationScreenEffect
 }

@@ -24,7 +24,6 @@ class InspirationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupObservers()
-        viewModel.onViewCreated()
     }
 
     private fun setupObservers() {
