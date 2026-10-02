@@ -1,6 +1,13 @@
 package com.juliaralves.nailverse.presentation.inspiration
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.os.Environment.DIRECTORY_PICTURES
+import android.provider.MediaStore
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,10 +30,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
@@ -34,6 +43,8 @@ import com.juliaralves.nailverse.R
 import com.juliaralves.nailverse.domain.model.InspirationPictureVO
 import com.juliaralves.nailverse.presentation.core.components.BasePrimaryButton
 import com.juliaralves.nailverse.presentation.inspiration.InspirationScreenEffect.HideFilterOptionsBottomSheet
+import com.juliaralves.nailverse.presentation.inspiration.InspirationScreenEffect.SaveImage
+import com.juliaralves.nailverse.presentation.inspiration.InspirationScreenEffect.ShareImage
 import com.juliaralves.nailverse.presentation.inspiration.InspirationScreenEffect.ShowFilterOptionsBottomSheet
 import com.juliaralves.nailverse.presentation.inspiration.components.InspirationActionButtons
 import com.juliaralves.nailverse.presentation.inspiration.components.InspirationFeed
@@ -71,13 +82,16 @@ private fun InspirationScreenLoaded(
     val lifecycleOwner = LocalLifecycleOwner.current
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val context = LocalContext.current
 
     LaunchedEffect(viewModel.screenEffect) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.screenEffect.collect {
                 when (it) {
-                    ShowFilterOptionsBottomSheet -> showBottomSheet = true
-                    HideFilterOptionsBottomSheet -> showBottomSheet = false
+                    is ShowFilterOptionsBottomSheet -> showBottomSheet = true
+                    is HideFilterOptionsBottomSheet -> showBottomSheet = false
+                    is ShareImage -> shareImage(it.url, context)
+                    is SaveImage -> saveImageToGallery(context, it.imageBytes, it.imageName)
                 }
             }
         }
@@ -99,6 +113,51 @@ private fun InspirationScreenLoaded(
                 sheetState = sheetState
             )
         }
+    }
+}
+
+private fun shareImage(url: String, context: Context) {
+    val sendIntent = Intent(Intent.ACTION_SEND).apply {
+        putExtra(Intent.EXTRA_TEXT, url.toUri())
+        type = "text/plain"
+    }
+    val shareIntent = Intent.createChooser(sendIntent, null)
+
+    context.startActivity(shareIntent)
+}
+
+private fun saveImageToGallery(context: Context, imageBytes: ByteArray, imageName: String) {
+    val contentValues = ContentValues().apply {
+        put(MediaStore.MediaColumns.DISPLAY_NAME, imageName)
+        put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            put(
+                MediaStore.MediaColumns.RELATIVE_PATH,
+                "$DIRECTORY_PICTURES/Inspiration"
+            )
+            put(MediaStore.MediaColumns.IS_PENDING, 1)
+        }
+    }
+
+    val resolver = context.contentResolver
+    val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+    if (uri != null) {
+        resolver.openOutputStream(uri)?.use { outputStream ->
+            outputStream.write(imageBytes)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            contentValues.clear()
+            contentValues.put(MediaStore.MediaColumns.IS_PENDING, 0)
+            resolver.update(uri, contentValues, null, null)
+        }
+
+        Toast.makeText(context, R.string.inspiration_save_image_success_toast, Toast.LENGTH_SHORT)
+            .show()
+    } else {
+        Toast.makeText(context, R.string.inspiration_save_image_error_toast, Toast.LENGTH_SHORT)
+            .show()
     }
 }
 

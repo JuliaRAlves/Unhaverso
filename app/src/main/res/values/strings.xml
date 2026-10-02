@@ -23,6 +23,9 @@
     <string name="inspiration_filter_confirm">Aplicar filtros</string>
     <string name="inspiration_filter_clear">Limpar filtros</string>
 
+    <string name="inspiration_save_image_success_toast">Imagem salva na galeria!</string>
+    <string name="inspiration_save_image_error_toast">Erro ao salvar imagem</string>
+
     <!-- endregion -->
 
     <!-- region Caixa de Esmaltes -->

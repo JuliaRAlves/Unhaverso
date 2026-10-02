@@ -51,7 +51,7 @@ fun InspirationFeed(
             }
         }
         items(inspirationList) {
-            GridItem(item = it)
+            GridItem(item = it, onAction = { action -> viewModel.onAction(action) })
         }
     }
 }

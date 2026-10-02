@@ -1,14 +1,17 @@
 package com.juliaralves.nailverse.presentation.inspiration
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil3.Bitmap
 import com.juliaralves.nailverse.domain.model.ColorFamilyEnum
 import com.juliaralves.nailverse.domain.model.InspirationPictureVO
 import com.juliaralves.nailverse.domain.model.NailPolishTagEnum
+import com.juliaralves.nailverse.presentation.inspiration.InspirationPictureAction.Download
+import com.juliaralves.nailverse.presentation.inspiration.InspirationPictureAction.Share
 import com.juliaralves.nailverse.presentation.inspiration.InspirationScreenEffect.HideFilterOptionsBottomSheet
+import com.juliaralves.nailverse.presentation.inspiration.InspirationScreenEffect.ShareImage
 import com.juliaralves.nailverse.presentation.inspiration.InspirationScreenEffect.ShowFilterOptionsBottomSheet
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +22,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
+
 
 class InspirationViewModel : ViewModel() {
 
@@ -31,12 +36,6 @@ class InspirationViewModel : ViewModel() {
     )
 
     private val isFilterEnabled = MutableStateFlow(false)
-
-    private val _downloadLiveData = MutableLiveData<String>()
-    val downloadLiveData: LiveData<String> = _downloadLiveData
-
-    private val _shareLiveData = MutableLiveData<String>()
-    val shareLiveData: LiveData<String> = _shareLiveData
 
     val screenState: StateFlow<InspirationScreenState> =
         combine(bottomSheetState, isFilterEnabled) { bottomSheet, isFilterEnabled ->
@@ -68,12 +67,29 @@ class InspirationViewModel : ViewModel() {
         "https://harpersbazaar.uol.com.br/wp-content/uploads/2023/05/nail-art-cromada-@carolina-683x1024.jpg"
     ).mapIndexed { index, item -> InspirationPictureVO(index, item) }
 
-    fun onDownloadPictureClicked(picture: InspirationPictureVO) {
-        _downloadLiveData.postValue(picture.imageUrl)
+    fun onAction(action: InspirationPictureAction) {
+        viewModelScope.launch {
+            when (action) {
+                is Download -> action.bitmap?.let { saveImage(it) }
+                is Share -> _screenEffect.send(ShareImage(action.item.imageUrl))
+            }
+        }
     }
 
-    fun onSharePictureClicked(picture: InspirationPictureVO) {
-        _shareLiveData.postValue(picture.imageUrl)
+    private fun saveImage(bitmap: Bitmap) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val imageName = "Inspiration_${System.currentTimeMillis()}.png"
+            val outputStream = ByteArrayOutputStream()
+            bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, outputStream)
+            val imageBytes = outputStream.toByteArray()
+
+            _screenEffect.send(
+                InspirationScreenEffect.SaveImage(
+                    imageBytes = imageBytes,
+                    imageName = imageName
+                )
+            )
+        }
     }
 
     fun onFilterClicked() {
@@ -105,20 +121,20 @@ class InspirationViewModel : ViewModel() {
     }
 
     fun onFilterUnselected(filterRes: Int) {
-        bottomSheetState.update {
+        bottomSheetState.update { state ->
             val color = ColorFamilyEnum.entries.firstOrNull { it.textRes == filterRes }
             val tag = NailPolishTagEnum.entries.firstOrNull { it.textRes == filterRes }
 
             if (color != null) {
-                val newMap = it.colorMap.toMutableMap()
+                val newMap = state.colorMap.toMutableMap()
                 newMap[color] = false
-                it.copy(colorMap = newMap)
+                state.copy(colorMap = newMap)
             } else if (tag != null) {
-                val newMap = it.tagMap.toMutableMap()
+                val newMap = state.tagMap.toMutableMap()
                 newMap[tag] = false
-                it.copy(tagMap = newMap)
+                state.copy(tagMap = newMap)
             } else {
-                it
+                state
             }
         }
     }
@@ -143,6 +159,11 @@ data class FilterOptionsBottomSheetState(
     val tagMap: Map<NailPolishTagEnum, Boolean>
 )
 
+sealed interface InspirationPictureAction {
+    data class Download(val bitmap: Bitmap?) : InspirationPictureAction
+    data class Share(val item: InspirationPictureVO) : InspirationPictureAction
+}
+
 sealed interface InspirationScreenState {
     data object Loading : InspirationScreenState
     data object Error : InspirationScreenState
@@ -158,4 +179,9 @@ sealed interface InspirationScreenState {
 sealed interface InspirationScreenEffect {
     data object ShowFilterOptionsBottomSheet : InspirationScreenEffect
     data object HideFilterOptionsBottomSheet : InspirationScreenEffect
+    data class ShareImage(val url: String) : InspirationScreenEffect
+    data class SaveImage(
+        val imageName: String,
+        val imageBytes: ByteArray
+    ) : InspirationScreenEffect
 }
