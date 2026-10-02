@@ -1,7 +1,5 @@
 package com.juliaralves.nailverse.presentation.inspiration
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil3.Bitmap
@@ -25,7 +23,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
-import java.io.InputStream
 
 
 class InspirationViewModel : ViewModel() {
@@ -39,12 +36,6 @@ class InspirationViewModel : ViewModel() {
     )
 
     private val isFilterEnabled = MutableStateFlow(false)
-
-    private val _downloadLiveData = MutableLiveData<String>()
-    val downloadLiveData: LiveData<String> = _downloadLiveData
-
-    private val _shareLiveData = MutableLiveData<String>()
-    val shareLiveData: LiveData<String> = _shareLiveData
 
     val screenState: StateFlow<InspirationScreenState> =
         combine(bottomSheetState, isFilterEnabled) { bottomSheet, isFilterEnabled ->
