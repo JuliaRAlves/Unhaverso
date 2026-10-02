@@ -79,6 +79,7 @@ fun BaseTextField(
                 Text(errorText)
             }
         },
+        textStyle = MaterialTheme.typography.bodyMedium,
         trailingIcon = {
             if (showClearIcon) {
                 Icon(
