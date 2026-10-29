@@ -10,10 +10,12 @@ import android.provider.MediaStore
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -55,7 +57,7 @@ import org.koin.androidx.compose.koinViewModel
 fun InspirationScreen(viewModel: InspirationViewModel = koinViewModel()) {
     val state by viewModel.screenState.collectAsState()
     when (state) {
-        is InspirationScreenState.Error -> InspirationScreenError()
+        is InspirationScreenState.Error -> InspirationScreenError(viewModel)
         is InspirationScreenState.Loaded -> InspirationScreenLoaded(
             viewModel,
             (state as InspirationScreenState.Loaded).inspirationList,
@@ -183,7 +185,7 @@ private fun FilterOptionsBottomSheetModal(
 }
 
 @Composable
-private fun InspirationScreenError() {
+private fun InspirationScreenError(viewModel: InspirationViewModel) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -203,13 +205,18 @@ private fun InspirationScreenError() {
         )
         BasePrimaryButton(
             text = stringResource(id = R.string.inspiration_error_button)
-        ) { }
+        ) { viewModel.retry() }
     }
 }
 
 @Composable
 private fun InspirationScreenLoading() {
-
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
+    }
 }
 
 @Composable

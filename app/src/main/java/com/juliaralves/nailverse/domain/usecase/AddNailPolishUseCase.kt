@@ -1,11 +1,15 @@
 package com.juliaralves.nailverse.domain.usecase
 
 import com.juliaralves.nailverse.domain.model.NailPolishTagEnum
+import com.juliaralves.nailverse.domain.repository.InspirationRepository
 import com.juliaralves.nailverse.domain.repository.NailPolishRepository
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-class AddNailPolishUseCase(private val repository: NailPolishRepository) {
+class AddNailPolishUseCase(
+    private val repository: NailPolishRepository,
+    private val inspirationRepository: InspirationRepository
+) {
 
     suspend fun execute(params: Params) {
         repository.addNailPolish(
@@ -14,6 +18,7 @@ class AddNailPolishUseCase(private val repository: NailPolishRepository) {
             brand = params.brand,
             tagList = params.tagMap.mapNotNull { if (it.value) it.key else null },
         )
+        inspirationRepository.clearInspirationFeed()
     }
 
     data class Params(

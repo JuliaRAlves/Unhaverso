@@ -1,6 +1,7 @@
 package com.juliaralves.nailverse.domain.utils
 
 import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.toColorInt
 import com.juliaralves.nailverse.domain.model.ColorFamilyEnum
 
 fun getColorFamilyByArgb(colorArgb: Int): ColorFamilyEnum {
@@ -32,5 +33,16 @@ fun getColorFamilyByArgb(colorArgb: Int): ColorFamilyEnum {
         in 290f..<345f -> ColorFamilyEnum.PINK
 
         else -> ColorFamilyEnum.RED
+    }
+}
+
+fun convertArgbToHex(colorArgb: Int): String {
+    val colorHex = colorArgb.toString().replace("0xFF", "#")
+
+    try {
+        colorHex.toColorInt()
+        return colorHex
+    } catch (e: IllegalArgumentException) {
+        throw e
     }
 }

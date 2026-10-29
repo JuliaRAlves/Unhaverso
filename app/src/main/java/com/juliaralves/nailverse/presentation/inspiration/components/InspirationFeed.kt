@@ -50,8 +50,11 @@ fun InspirationFeed(
                 }
             }
         }
-        items(inspirationList) {
-            GridItem(item = it, onAction = { action -> viewModel.onAction(action) })
+        items(
+            items = inspirationList,
+            key = { it.id }
+        ) { item ->
+            GridItem(item = item, onAction = { action -> viewModel.onAction(action) })
         }
     }
 }

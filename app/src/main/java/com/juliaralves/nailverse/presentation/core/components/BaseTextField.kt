@@ -44,7 +44,7 @@ fun BaseTextField(
             onValueChange(it)
         },
         leadingIcon = leadingIcon,
-        label = { Text(title) },
+        label = { Text(title, style = MaterialTheme.typography.bodyMedium) },
         shape = RoundedCornerShape(size = 100.dp),
         singleLine = true,
         colors = TextFieldDefaults.colors().copy(
@@ -98,7 +98,7 @@ fun BaseTextField(
 @Composable
 fun BaseTextFieldDarkMode() {
     NailverseTheme {
-        BaseTextField(Modifier, "Nome do esmalte", null, true, {}, true, "erro", "texto", {})
+        BaseTextField(Modifier, "Nome do esmalte", null, true, {}, true, "erro", "", {})
     }
 }
 

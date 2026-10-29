@@ -6,11 +6,15 @@ import coil3.Bitmap
 import com.juliaralves.nailverse.domain.model.ColorFamilyEnum
 import com.juliaralves.nailverse.domain.model.InspirationPictureVO
 import com.juliaralves.nailverse.domain.model.NailPolishTagEnum
+import com.juliaralves.nailverse.domain.usecase.GetInspirationPicturesUseCase
 import com.juliaralves.nailverse.presentation.inspiration.InspirationPictureAction.Download
 import com.juliaralves.nailverse.presentation.inspiration.InspirationPictureAction.Share
 import com.juliaralves.nailverse.presentation.inspiration.InspirationScreenEffect.HideFilterOptionsBottomSheet
 import com.juliaralves.nailverse.presentation.inspiration.InspirationScreenEffect.ShareImage
 import com.juliaralves.nailverse.presentation.inspiration.InspirationScreenEffect.ShowFilterOptionsBottomSheet
+import com.juliaralves.nailverse.presentation.inspiration.InspirationScreenState.Empty
+import com.juliaralves.nailverse.presentation.inspiration.InspirationScreenState.Loaded
+import com.juliaralves.nailverse.presentation.inspiration.InspirationScreenState.Loading
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -25,47 +29,80 @@ import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 
 
-class InspirationViewModel : ViewModel() {
+class InspirationViewModel(
+    private val getInspirationPicturesUseCase: GetInspirationPicturesUseCase
+) : ViewModel() {
 
     private val bottomSheetState = MutableStateFlow(
         FilterOptionsBottomSheetState(
-            colorMap = ColorFamilyEnum.entries.associateWith { false }.toMutableMap(),
+            colorMap = ColorFamilyEnum.entries.associateWith { false },
             tagMap = NailPolishTagEnum.entries.filter { it.isFilterable }.associateWith { false }
-                .toMutableMap()
         )
     )
 
-    private val isFilterEnabled = MutableStateFlow(false)
-
-    val screenState: StateFlow<InspirationScreenState> =
-        combine(bottomSheetState, isFilterEnabled) { bottomSheet, isFilterEnabled ->
-            val filterList =
-                bottomSheet.colorMap.mapNotNull { if (it.value) it.key.textRes else null }
-                    .plus(bottomSheet.tagMap.mapNotNull { if (it.value) it.key.textRes else null })
-            InspirationScreenState.Loaded(pictureList, filterList, bottomSheet, isFilterEnabled)
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = InspirationScreenState.Loading
-        )
+    private val pictureList = MutableStateFlow<List<InspirationPictureVO>?>(null)
+    private val isError = MutableStateFlow(false)
 
     private val _screenEffect = Channel<InspirationScreenEffect>(capacity = Channel.BUFFERED)
     val screenEffect: Flow<InspirationScreenEffect>
         get() = _screenEffect.receiveAsFlow()
 
-    // temp
-    private val pictureList = listOf(
-        "https://m.media-amazon.com/images/I/81hwPfRNT7L._SL1500_.jpg",
-        "https://www.byrdie.com/thmb/buMlOI4jQxZI2NSLrezikkpuiME=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/neutralanails_recirc-2d3a9cda11dd4d94be17a5fafff54880.jpg",
-        "https://media.glamourmagazine.co.uk/photos/66d1b1ad94d5017f0a75866d/1:1/w_1081,h_1081,c_limit/BOW%20NAILS%20300824%20MAIN.jpg",
-        "https://negociosdebeleza.beautyfair.com.br/wp-content/uploads/2023/09/tendencias-nail-art-2024-3-1.png",
-        "https://www.refinery29.com/images/11798078.jpg",
-        "https://www.instyle.com/thmb/Q0PMTVFmvHLDoyr8f0aOQhe_H9M=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/366441869_296892119600354_6448618165582235578_n-9de5af90aa044dc09494925896fb3832.jpg",
-        "https://static.stealthelook.com.br/wp-content/uploads/2022/10/tendencias-de-nail-art-abstrato-verde-20221018201922.jpg",
-        "https://www.coloramaesmaltes.com.br/-/media/Project/Loreal/Brand-Sites/Essie/MASTER/DMI/articles/tips_trends/2023/jelly-nails/jelly-nails.jpg",
-        "https://belezamoderna.com.br/wp-content/uploads/2023/04/glass-nail-2-e1682517372696.webp",
-        "https://harpersbazaar.uol.com.br/wp-content/uploads/2023/05/nail-art-cromada-@carolina-683x1024.jpg"
-    ).mapIndexed { index, item -> InspirationPictureVO(index, item) }
+    val screenState: StateFlow<InspirationScreenState> =
+        combine(pictureList, bottomSheetState, isError) { pictures, bottomSheet, error ->
+            when {
+                error -> InspirationScreenState.Error
+                pictures == null -> Loading
+                pictures.isEmpty() -> Empty
+                else -> {
+                    val selectedColors = bottomSheet.colorMap.filterValues { it }.keys
+                    val selectedTags = bottomSheet.tagMap.filterValues { it }.keys
+                    val filterList = selectedColors.map { it.textRes } + selectedTags.map { it.textRes }
+
+                    Loaded(
+                        inspirationList = pictures,
+                        filterList = filterList,
+                        filterOptionsBottomSheetState = bottomSheet,
+                        isFilterEnabled = filterList.isNotEmpty()
+                    )
+                }
+            }
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Loading)
+
+    init {
+        viewModelScope.launch {
+            bottomSheetState.collect {
+                fetchPictures()
+            }
+        }
+    }
+
+    private fun fetchPictures() {
+        viewModelScope.launch {
+            isError.value = false
+            pictureList.value = null
+
+            runCatching {
+                val state = bottomSheetState.value
+                val selectedColors = state.colorMap.filterValues { it }.keys.toList()
+                val selectedTags = state.tagMap.filterValues { it }.keys.toList()
+
+                getInspirationPicturesUseCase.execute(
+                    GetInspirationPicturesUseCase.Params(
+                        colorFilterList = selectedColors,
+                        tagFilterList = selectedTags
+                    )
+                )
+            }.onSuccess { list ->
+                pictureList.value = list
+            }.onFailure {
+                isError.value = true
+            }
+        }
+    }
+
+    fun retry() {
+        fetchPictures()
+    }
 
     fun onAction(action: InspirationPictureAction) {
         viewModelScope.launch {
@@ -142,7 +179,6 @@ class InspirationViewModel : ViewModel() {
     fun clearFilter() {
         viewModelScope.launch {
             _screenEffect.send(HideFilterOptionsBottomSheet)
-            isFilterEnabled.update { false }
             bottomSheetState.update {
                 FilterOptionsBottomSheetState(
                     colorMap = ColorFamilyEnum.entries.associateWith { false }.toMutableMap(),
