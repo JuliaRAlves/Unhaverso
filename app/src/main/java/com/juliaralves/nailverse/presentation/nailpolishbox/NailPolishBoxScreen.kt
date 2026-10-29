@@ -120,11 +120,10 @@ private fun NailPolishBoxEmptyScreen() {
         Image(
             painter = painterResource(R.drawable.img_empty_box),
             contentDescription = null,
-            modifier = Modifier.size(400.dp)
+            modifier = Modifier.size(300.dp)
         )
         Text(
             text = stringResource(id = R.string.nail_polish_box_empty_text),
-            modifier = Modifier.padding(vertical = 24.dp),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center

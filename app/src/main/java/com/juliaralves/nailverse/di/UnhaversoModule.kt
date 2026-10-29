@@ -2,16 +2,21 @@ package com.juliaralves.nailverse.di
 
 import com.juliaralves.nailverse.MainViewModel
 import com.juliaralves.nailverse.data.local.datasource.AppLocalDataSource
+import com.juliaralves.nailverse.data.local.datasource.InspirationPictureLocalDataSource
 import com.juliaralves.nailverse.data.local.datasource.NailPolishLocalDataSource
 import com.juliaralves.nailverse.data.local.datastore.ThemeDataStore
 import com.juliaralves.nailverse.data.local.room.database.AppDatabase
 import com.juliaralves.nailverse.data.local.room.database.getDatabaseBuilder
+import com.juliaralves.nailverse.data.mapper.InspirationPictureDataMapper
 import com.juliaralves.nailverse.data.mapper.NailPolishDataMapper
 import com.juliaralves.nailverse.data.repository.AppRepositoryImpl
+import com.juliaralves.nailverse.data.repository.InspirationRepositoryImpl
 import com.juliaralves.nailverse.data.repository.NailPolishRepositoryImpl
 import com.juliaralves.nailverse.domain.repository.AppRepository
+import com.juliaralves.nailverse.domain.repository.InspirationRepository
 import com.juliaralves.nailverse.domain.repository.NailPolishRepository
 import com.juliaralves.nailverse.domain.usecase.AddNailPolishUseCase
+import com.juliaralves.nailverse.domain.usecase.GetInspirationPicturesUseCase
 import com.juliaralves.nailverse.domain.usecase.GetNailPolishUseCase
 import com.juliaralves.nailverse.domain.usecase.ObserveThemeUseCase
 import com.juliaralves.nailverse.domain.usecase.RemoveAllNailPolishUseCase
@@ -29,13 +34,17 @@ val appModule = module {
     // Data
     single<AppDatabase> { getDatabaseBuilder(get()) }
     factoryOf(::NailPolishLocalDataSource)
+    factoryOf(::InspirationPictureLocalDataSource)
     factoryOf(::NailPolishDataMapper)
+    factoryOf(::InspirationPictureDataMapper)
     factoryOf(::NailPolishRepositoryImpl) bind NailPolishRepository::class
+    factoryOf(::InspirationRepositoryImpl) bind InspirationRepository::class
     factoryOf(::ThemeDataStore)
     factoryOf(::AppLocalDataSource)
     factoryOf(::AppRepositoryImpl) bind AppRepository::class
 
     // Domain
+    factoryOf(::GetInspirationPicturesUseCase)
     factoryOf(::GetNailPolishUseCase)
     factoryOf(::AddNailPolishUseCase)
     factoryOf(::RemoveNailPolishUseCase)

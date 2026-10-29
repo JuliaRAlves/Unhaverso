@@ -9,5 +9,6 @@ fun getDatabaseBuilder(context: Context): AppDatabase {
     return Room.databaseBuilder<AppDatabase>(context, "nailverse.db")
         .setDriver(AndroidSQLiteDriver())
         .setQueryCoroutineContext(Dispatchers.IO)
+        .fallbackToDestructiveMigration(dropAllTables = true)
         .build()
 }
